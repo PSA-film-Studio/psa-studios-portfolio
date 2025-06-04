@@ -51,6 +51,26 @@ export function FileUpload({ onFileUploaded }: FileUploadProps) {
     setIsUploading(true)
     setUploadStatus({ type: null, message: "" })
 
+    // Client-side validation
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      setUploadStatus({
+        type: "error",
+        message: "File size must be less than 5MB",
+      })
+      setIsUploading(false)
+      return
+    }
+
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      setUploadStatus({
+        type: "error",
+        message: "Only image and video files are allowed",
+      })
+      setIsUploading(false)
+      return
+    }
+
     try {
       const formData = new FormData()
       formData.append("file", file)
@@ -65,7 +85,7 @@ export function FileUpload({ onFileUploaded }: FileUploadProps) {
       if (result.success) {
         setUploadStatus({
           type: "success",
-          message: `File uploaded successfully!`,
+          message: `File uploaded successfully! (${(file.size / 1024 / 1024).toFixed(2)}MB)`,
           filePath: result.filePath,
         })
       } else {
@@ -108,7 +128,7 @@ export function FileUpload({ onFileUploaded }: FileUploadProps) {
             <Upload className="h-12 w-12 text-gray-400" />
             <div>
               <p className="text-lg font-medium">{isDragging ? "Drop your file here" : "Drag & drop your file here"}</p>
-              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 4MB)</p>
+              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 5MB)</p>
             </div>
             <input
               type="file"

@@ -201,18 +201,18 @@ export default function AdminPanel() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 max-w-md w-full mx-4"
         >
-          <h1 className="text-2xl font-bold text-white mb-6 text-center">PSA Studios Admin</h1>
+          <h1 className="text-2xl font-bold text-white mb-6 text-center">PSA Studios Management</h1>
           <div className="space-y-4">
             <Input
               type="password"
-              placeholder="Enter admin password"
+              placeholder="Enter management password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleLogin()}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
             />
             <Button onClick={handleLogin} className="w-full bg-white text-black hover:bg-white/90">
-              Login
+              Access Studio Management
             </Button>
           </div>
         </motion.div>
@@ -225,7 +225,7 @@ export default function AdminPanel() {
       <div className="max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">PSA Studios Admin Panel</h1>
+            <h1 className="text-3xl font-bold">PSA Studios Management Panel</h1>
             <div className="flex gap-4">
               <Button
                 onClick={() => window.open("/", "_blank")}

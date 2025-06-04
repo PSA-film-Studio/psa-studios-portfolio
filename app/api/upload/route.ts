@@ -15,10 +15,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Only image and video files are allowed" }, { status: 400 })
     }
 
-    // Validate file size (4MB limit for Vercel)
-    const maxSize = 4 * 1024 * 1024 // 4MB
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSize) {
-      return NextResponse.json({ error: "File size must be less than 4MB" }, { status: 400 })
+      return NextResponse.json({ error: "File size must be less than 5MB" }, { status: 400 })
     }
 
     // Determine folder based on file type
