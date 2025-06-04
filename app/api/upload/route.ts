@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     // Determine folder based on file type
     const folder = file.type.startsWith("image/") ? "images" : "videos"
-    const fileName = `${folder}/${file.name}`
+    const fileName = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`
 
     // Upload to Vercel Blob
     const blob = await put(fileName, file, {

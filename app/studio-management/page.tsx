@@ -18,6 +18,10 @@ import {
   Globe,
   CloudIcon,
   Cloud,
+  Github,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -60,6 +64,11 @@ interface Project {
   sourceType: "file" | "url"
 }
 
+interface GitHubSaveStatus {
+  type: "success" | "error" | "loading" | null
+  message: string
+}
+
 export default function AdminPanel() {
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -69,14 +78,125 @@ export default function AdminPanel() {
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [showAddMedia, setShowAddMedia] = useState(false)
   const [showAddProject, setShowAddProject] = useState(false)
+  const [githubSaveStatus, setGithubSaveStatus] = useState<GitHubSaveStatus>({ type: null, message: "" })
+
+  // GitHub configuration
+  const [githubConfig, setGithubConfig] = useState({
+    token: "",
+    repo: "",
+    owner: "",
+  })
 
   // Simple authentication
   const handleLogin = () => {
     if (password === "PSA.website.@#!") {
       setIsAuthenticated(true)
       loadData()
+      loadGithubConfig()
     } else {
       alert("Incorrect password")
+    }
+  }
+
+  // Load GitHub config from localStorage
+  const loadGithubConfig = () => {
+    try {
+      const savedConfig = localStorage.getItem("psaStudiosGithubConfig")
+      if (savedConfig) {
+        setGithubConfig(JSON.parse(savedConfig))
+      }
+    } catch (error) {
+      console.error("Error loading GitHub config:", error)
+    }
+  }
+
+  // Save GitHub config to localStorage
+  const saveGithubConfig = () => {
+    try {
+      localStorage.setItem("psaStudiosGithubConfig", JSON.stringify(githubConfig))
+    } catch (error) {
+      console.error("Error saving GitHub config:", error)
+    }
+  }
+
+  // Save changes to GitHub
+  const saveToGithub = async () => {
+    if (!githubConfig.token || !githubConfig.repo || !githubConfig.owner) {
+      setGithubSaveStatus({
+        type: "error",
+        message: "Please configure GitHub settings first (Token, Repository, Owner)",
+      })
+      return
+    }
+
+    setGithubSaveStatus({ type: "loading", message: "Saving to GitHub..." })
+
+    try {
+      // Prepare the data to save
+      const dataToSave = {
+        mediaItems,
+        projects,
+        lastUpdated: new Date().toISOString(),
+        version: "1.0",
+      }
+
+      // Create the file content
+      const fileContent = JSON.stringify(dataToSave, null, 2)
+      const encodedContent = btoa(fileContent)
+
+      // Check if file exists first
+      let sha = null
+      try {
+        const existingFileResponse = await fetch(
+          `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/data/psa-studios-data.json`,
+          {
+            headers: {
+              Authorization: `token ${githubConfig.token}`,
+              "Content-Type": "application/json",
+            },
+          },
+        )
+
+        if (existingFileResponse.ok) {
+          const existingFile = await existingFileResponse.json()
+          sha = existingFile.sha
+        }
+      } catch (error) {
+        console.log("File doesn't exist yet, will create new one")
+      }
+
+      // Create or update the file
+      const response = await fetch(
+        `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/data/psa-studios-data.json`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${githubConfig.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `Update PSA Studios data - ${new Date().toLocaleString()}`,
+            content: encodedContent,
+            ...(sha && { sha }),
+          }),
+        },
+      )
+
+      if (response.ok) {
+        const result = await response.json()
+        setGithubSaveStatus({
+          type: "success",
+          message: `Successfully saved to GitHub! Commit: ${result.commit.sha.substring(0, 7)}`,
+        })
+      } else {
+        const error = await response.json()
+        throw new Error(error.message || "Failed to save to GitHub")
+      }
+    } catch (error) {
+      setGithubSaveStatus({
+        type: "error",
+        message: error instanceof Error ? error.message : "Failed to save to GitHub",
+      })
     }
   }
 
@@ -171,20 +291,52 @@ export default function AdminPanel() {
   // Save data to localStorage
   const saveData = () => {
     try {
-      localStorage.setItem("psaStudiosMedia", JSON.stringify(mediaItems))
-      localStorage.setItem("psaStudiosProjects", JSON.stringify(projects))
-      console.log("Data saved to localStorage:", { mediaItems, projects })
+      const mediaData = JSON.stringify(mediaItems)
+      const projectData = JSON.stringify(projects)
+
+      localStorage.setItem("psaStudiosMedia", mediaData)
+      localStorage.setItem("psaStudiosProjects", projectData)
+
+      console.log("✅ Data saved to localStorage:", {
+        mediaCount: mediaItems.length,
+        projectCount: projects.length,
+        rawMediaData: mediaData.substring(0, 200) + "...",
+        mediaItems: mediaItems.map((item) => ({
+          id: item.id,
+          title: item.title,
+          category: item.category,
+          type: item.type,
+          src: item.src.substring(0, 50) + "...",
+        })),
+      })
+
+      // Verify the data was actually saved
+      const verification = localStorage.getItem("psaStudiosMedia")
+      if (verification) {
+        const parsed = JSON.parse(verification)
+        console.log("🔍 Verification - Items in localStorage:", parsed.length)
+        console.log(
+          "🔍 Verification - Categories:",
+          parsed.map((item: any) => `${item.title}: ${item.category}`),
+        )
+      } else {
+        console.error("❌ Failed to save to localStorage!")
+      }
 
       // Trigger custom event for same-tab updates
       window.dispatchEvent(new CustomEvent("localStorageUpdate"))
     } catch (error) {
-      console.error("Error saving data:", error)
+      console.error("❌ Error saving data:", error)
     }
   }
 
   useEffect(() => {
     saveData()
   }, [mediaItems, projects])
+
+  useEffect(() => {
+    saveGithubConfig()
+  }, [githubConfig])
 
   const handleAddMediaItem = (newItem: Omit<MediaItem, "id">) => {
     const item: MediaItem = {
@@ -271,6 +423,18 @@ export default function AdminPanel() {
                 Preview Site
               </Button>
               <Button
+                onClick={saveToGithub}
+                disabled={githubSaveStatus.type === "loading"}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                {githubSaveStatus.type === "loading" ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Github className="w-4 h-4 mr-2" />
+                )}
+                Save to GitHub
+              </Button>
+              <Button
                 onClick={() => setIsAuthenticated(false)}
                 variant="outline"
                 className="border-red-500/50 text-red-400 hover:bg-red-500/10"
@@ -279,6 +443,105 @@ export default function AdminPanel() {
               </Button>
             </div>
           </div>
+
+          {/* GitHub Save Status */}
+          {githubSaveStatus.type && (
+            <Card
+              className={`mb-6 ${
+                githubSaveStatus.type === "success"
+                  ? "border-green-200 bg-green-50/10"
+                  : githubSaveStatus.type === "error"
+                    ? "border-red-200 bg-red-50/10"
+                    : "border-blue-200 bg-blue-50/10"
+              }`}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-start space-x-3">
+                  {githubSaveStatus.type === "success" ? (
+                    <CheckCircle className="h-5 w-5 text-green-400 mt-0.5" />
+                  ) : githubSaveStatus.type === "error" ? (
+                    <AlertCircle className="h-5 w-5 text-red-400 mt-0.5" />
+                  ) : (
+                    <Loader2 className="h-5 w-5 text-blue-400 mt-0.5 animate-spin" />
+                  )}
+                  <div className="flex-1">
+                    <p
+                      className={`font-medium ${
+                        githubSaveStatus.type === "success"
+                          ? "text-green-300"
+                          : githubSaveStatus.type === "error"
+                            ? "text-red-300"
+                            : "text-blue-300"
+                      }`}
+                    >
+                      {githubSaveStatus.message}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setGithubSaveStatus({ type: null, message: "" })}
+                    variant="ghost"
+                    size="sm"
+                    className="text-white/60 hover:text-white"
+                  >
+                    ×
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* GitHub Configuration */}
+          <Card className="mb-6 border-blue-200/20 bg-blue-50/5">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Github className="w-5 h-5" />
+                GitHub Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">GitHub Token</label>
+                  <Input
+                    type="password"
+                    value={githubConfig.token}
+                    onChange={(e) => setGithubConfig({ ...githubConfig, token: e.target.value })}
+                    className="bg-white/10 border-white/20 text-white"
+                    placeholder="ghp_xxxxxxxxxxxx"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Repository Owner</label>
+                  <Input
+                    value={githubConfig.owner}
+                    onChange={(e) => setGithubConfig({ ...githubConfig, owner: e.target.value })}
+                    className="bg-white/10 border-white/20 text-white"
+                    placeholder="your-username"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Repository Name</label>
+                  <Input
+                    value={githubConfig.repo}
+                    onChange={(e) => setGithubConfig({ ...githubConfig, repo: e.target.value })}
+                    className="bg-white/10 border-white/20 text-white"
+                    placeholder="your-repo-name"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-white/60">
+                Create a GitHub Personal Access Token with 'repo' permissions at{" "}
+                <a
+                  href="https://github.com/settings/tokens"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  github.com/settings/tokens
+                </a>
+              </p>
+            </CardContent>
+          </Card>
 
           <Tabs defaultValue="media" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-white/10">
@@ -724,7 +987,7 @@ function MediaItemForm({
     setFormData({
       ...formData,
       src: filePath,
-      sourceType: "file",
+      sourceType: "url", // Cloudinary URLs should be marked as URL type
     })
   }
 
@@ -984,7 +1247,6 @@ function ProjectForm({
 
     if (!formData.description.trim()) {
       alert("Please enter a description")
-      return
     }
 
     if (project) {

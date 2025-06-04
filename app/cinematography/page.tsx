@@ -38,34 +38,53 @@ export default function CinematographyPage() {
     const loadMediaItems = () => {
       try {
         const savedMedia = localStorage.getItem("psaStudiosMedia")
-        console.log("Loading media from localStorage:", savedMedia)
+        console.log("🔍 Raw localStorage data:", savedMedia)
 
         if (savedMedia) {
           const allMedia = JSON.parse(savedMedia)
-          console.log("All media items:", allMedia)
+          console.log("📦 Parsed media items:", allMedia)
+          console.log("📊 Total items found:", allMedia.length)
 
-          const cinematographyItems = allMedia.filter((item: any) => {
-            console.log("Checking item:", item, "Category:", item.category)
-            return item.category === "cinematography"
+          // Log each item to see what we're working with
+          allMedia.forEach((item: any, index: number) => {
+            console.log(`📋 Item ${index + 1}:`, {
+              id: item.id,
+              title: item.title,
+              category: item.category,
+              type: item.type,
+              src: item.src?.substring(0, 100) + "...",
+            })
           })
 
-          console.log("Cinematography items found:", cinematographyItems)
+          const cinematographyItems = allMedia.filter((item: any) => {
+            const isMatch = item.category === "cinematography"
+            console.log(`🎬 Item "${item.title}" - Category: "${item.category}" - Match: ${isMatch}`)
+            return isMatch
+          })
 
-          // Ensure all items have layout property
-          const itemsWithLayout = cinematographyItems.map((item: any) => ({
-            ...item,
-            layout: item.layout || {
-              colSpan: "md:col-span-1",
-              rowSpan: "md:row-span-1",
-              aspectRatio: item.type === "video" ? "aspect-video" : "aspect-square",
-            },
-          }))
+          console.log("🎯 Cinematography items found:", cinematographyItems.length)
+          console.log("🎯 Cinematography items:", cinematographyItems)
+
+          // Ensure all items have proper structure
+          const itemsWithLayout = cinematographyItems.map((item: any, index: number) => {
+            const processedItem = {
+              ...item,
+              layout: item.layout || {
+                colSpan: "md:col-span-1",
+                rowSpan: "md:row-span-1",
+                aspectRatio: item.type === "video" ? "aspect-video" : "aspect-square",
+              },
+            }
+            console.log(`✅ Processed item ${index + 1}:`, processedItem)
+            return processedItem
+          })
 
           setGalleryItems(itemsWithLayout)
+          console.log("🎉 Gallery items set:", itemsWithLayout.length)
         } else {
-          console.log("No saved media found, using defaults")
+          console.log("❌ No saved media found, using defaults")
           // Default items if no saved data
-          setGalleryItems([
+          const defaultItems = [
             {
               id: "default-1",
               type: "image",
@@ -84,25 +103,16 @@ export default function CinematographyPage() {
               category: "cinematography",
               layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-square" },
             },
-            {
-              id: "default-3",
-              type: "external-link",
-              title: "Cinematography Reel",
-              description: "Our latest cinematography showcase",
-              src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-              thumbnail: "/placeholder.svg?height=400&width=600",
-              category: "cinematography",
-              layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
-              isExternal: true,
-              externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            },
-          ])
+          ]
+          setGalleryItems(defaultItems)
+          console.log("🔄 Set default items:", defaultItems.length)
         }
       } catch (error) {
-        console.error("Error loading media:", error)
+        console.error("💥 Error loading media:", error)
         setGalleryItems([])
       } finally {
         setIsLoading(false)
+        console.log("⏰ Loading complete")
       }
     }
 
@@ -209,36 +219,67 @@ export default function CinematographyPage() {
           </p>
         </motion.div>
 
-        {/* Debug Info */}
+        {/* Enhanced Debug Info */}
         <div className="max-w-7xl mx-auto px-6 mb-8">
-          <div className="bg-white/5 p-4 rounded-lg text-sm text-white/70">
-            <p>Gallery Items: {galleryItems.length} | Cinematography items loaded from localStorage</p>
-            {galleryItems.length > 0 && <p>Items: {galleryItems.map((item) => item.title).join(", ")}</p>}
+          <div className="bg-white/5 p-4 rounded-lg text-sm text-white/70 space-y-2">
+            <p>🎬 Gallery Items: {galleryItems.length} | Cinematography items loaded from localStorage</p>
+            <p>
+              📊 Raw localStorage check: {localStorage.getItem("psaStudiosMedia") ? "✅ Data exists" : "❌ No data"}
+            </p>
+            {galleryItems.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <p>📋 Items: {galleryItems.map((item) => item.title).join(", ")}</p>
+                <div className="space-y-1">
+                  {galleryItems.map((item, i) => (
+                    <p key={i} className="text-xs">
+                      🖼️ {i + 1}. "{item.title}" - {item.type} - {item.src.substring(0, 80)}...
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+            {galleryItems.length === 0 && (
+              <p className="text-yellow-400">⚠️ No items found - check console for debugging info</p>
+            )}
           </div>
         </div>
 
         {/* Gallery Grid */}
         <div ref={ref} className="max-w-7xl mx-auto px-6">
           {galleryItems.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-fr gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 auto-rows-[200px] gap-4 md:gap-6">
               {galleryItems.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 40 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className={`group relative overflow-hidden rounded-lg ${item.layout?.colSpan || "md:col-span-1"} ${item.layout?.rowSpan || "md:row-span-1"}`}
+                  className={`group relative overflow-hidden rounded-lg ${
+                    index % 5 === 0
+                      ? "md:col-span-2 lg:col-span-3 md:row-span-2"
+                      : index % 3 === 0
+                        ? "md:col-span-2 lg:col-span-2"
+                        : "md:col-span-1 lg:col-span-1"
+                  }`}
                 >
                   {item.type === "image" ? (
                     <div
-                      className={`relative ${item.layout?.aspectRatio || "aspect-video"} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer`}
+                      className="relative w-full h-full min-h-[200px] overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer"
                       onClick={() => handleImageClick(index)}
                     >
                       <Image
-                        src={item.src || "/placeholder.svg"}
+                        src={item.src || "/placeholder.svg?height=400&width=600"}
                         alt={item.description}
                         fill
                         className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority={index < 4}
+                        onLoad={() => console.log("Image loaded successfully:", item.src)}
+                        onError={(e) => {
+                          console.error("Image failed to load:", item.src)
+                          const target = e.target as HTMLImageElement
+                          target.src = "/placeholder.svg?height=400&width=600"
+                        }}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
