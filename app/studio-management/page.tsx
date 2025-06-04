@@ -18,6 +18,7 @@ import {
   Upload,
   Globe,
   CloudIcon,
+  Cloud,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,6 +30,7 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import { FileUpload } from "@/components/file-upload"
 import { ExternalServiceUpload } from "@/components/external-service-upload"
+import { CloudinaryUpload } from "@/components/cloudinary-upload"
 
 interface MediaItem {
   id: string
@@ -758,7 +760,7 @@ function MediaItemForm({
 
         <div className="bg-white/5 rounded-lg p-4">
           <Tabs defaultValue="file-upload" onValueChange={(value) => setUploadMethod(value as "file-upload" | "url")}>
-            <TabsList className="grid w-full grid-cols-2 bg-white/10">
+            <TabsList className="grid w-full grid-cols-3 bg-white/10">
               <TabsTrigger value="file-upload" className="data-[state=active]:bg-white data-[state=active]:text-black">
                 <Upload className="w-4 h-4 mr-2" />
                 File Upload
@@ -766,6 +768,10 @@ function MediaItemForm({
               <TabsTrigger value="url" className="data-[state=active]:bg-white data-[state=active]:text-black">
                 <CloudIcon className="w-4 h-4 mr-2" />
                 URL / External
+              </TabsTrigger>
+              <TabsTrigger value="cloudinary" className="data-[state=active]:bg-white data-[state=active]:text-black">
+                <Cloud className="w-4 h-4 mr-2" />
+                Cloudinary CDN
               </TabsTrigger>
             </TabsList>
 
@@ -775,6 +781,19 @@ function MediaItemForm({
 
             <TabsContent value="url" className="mt-4">
               <ExternalServiceUpload onMediaSelected={handleExternalMediaSelected} />
+            </TabsContent>
+
+            <TabsContent value="cloudinary" className="mt-4">
+              <CloudinaryUpload
+                onFileUploaded={(url) => {
+                  setFormData({
+                    ...formData,
+                    src: url,
+                    sourceType: "url",
+                  })
+                }}
+                resourceType={formData.type === "video" ? "video" : "image"}
+              />
             </TabsContent>
           </Tabs>
         </div>

@@ -9,9 +9,10 @@ import { Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 
 interface FileUploadProps {
   onFileUploaded: (filePath: string) => void
+  accept?: string
 }
 
-export function FileUpload({ onFileUploaded }: FileUploadProps) {
+export function FileUpload({ onFileUploaded, accept = "image/*,video/*" }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<{
@@ -52,11 +53,11 @@ export function FileUpload({ onFileUploaded }: FileUploadProps) {
     setUploadStatus({ type: null, message: "" })
 
     // Client-side validation
-    const maxSize = 5 * 1024 * 1024 // 5MB
+    const maxSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxSize) {
       setUploadStatus({
         type: "error",
-        message: "File size must be less than 5MB",
+        message: "File size must be less than 10MB",
       })
       setIsUploading(false)
       return
@@ -128,11 +129,11 @@ export function FileUpload({ onFileUploaded }: FileUploadProps) {
             <Upload className="h-12 w-12 text-gray-400" />
             <div>
               <p className="text-lg font-medium">{isDragging ? "Drop your file here" : "Drag & drop your file here"}</p>
-              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 5MB)</p>
+              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 10MB)</p>
             </div>
             <input
               type="file"
-              accept="image/*,video/*"
+              accept={accept}
               onChange={handleFileSelect}
               className="hidden"
               id="file-upload"

@@ -35,6 +35,8 @@ export function ExternalServiceUpload({ onMediaSelected }: ExternalServiceUpload
       url: imageUrl,
       type: "image",
     })
+    setImageUrl("")
+    setPreviewUrl(null)
   }
 
   const handleVideoUrlSubmit = () => {
@@ -49,6 +51,9 @@ export function ExternalServiceUpload({ onMediaSelected }: ExternalServiceUpload
       type: "video",
       thumbnailUrl: thumbnailUrl || undefined,
     })
+    setVideoUrl("")
+    setThumbnailUrl("")
+    setPreviewUrl(null)
   }
 
   const handleExternalUrlSubmit = () => {
@@ -63,12 +68,16 @@ export function ExternalServiceUpload({ onMediaSelected }: ExternalServiceUpload
       type: "external-link",
       thumbnailUrl: thumbnailUrl || undefined,
     })
+    setExternalUrl("")
+    setThumbnailUrl("")
+    setPreviewUrl(null)
   }
 
   const handleImagePreview = () => {
     if (imageUrl) {
       setPreviewUrl(imageUrl)
       setPreviewType("image")
+      setError(null)
     }
   }
 
@@ -76,9 +85,11 @@ export function ExternalServiceUpload({ onMediaSelected }: ExternalServiceUpload
     if (thumbnailUrl) {
       setPreviewUrl(thumbnailUrl)
       setPreviewType("image")
+      setError(null)
     } else if (videoUrl) {
       setPreviewUrl(videoUrl)
       setPreviewType("video")
+      setError(null)
     }
   }
 
@@ -86,6 +97,7 @@ export function ExternalServiceUpload({ onMediaSelected }: ExternalServiceUpload
     if (thumbnailUrl) {
       setPreviewUrl(thumbnailUrl)
       setPreviewType("image")
+      setError(null)
     }
   }
 
