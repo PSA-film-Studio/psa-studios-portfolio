@@ -46,7 +46,7 @@ export function CloudinaryUpload({ onFileUploaded, resourceType = "image" }: Clo
       formData.append("resource_type", resourceType)
 
       // Using a demo cloud name - you'll replace this with your own
-      const cloudName = "demo" // Replace with your actual cloud name
+      const cloudName = "db7yk3uhq" // Replace with your actual cloud name
 
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
         method: "POST",
