@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import Navigation from "@/components/navigation"
 import Image from "next/image"
 import { Calendar, BarChart3, Camera, Bot } from "lucide-react"
-import { useState, type FormEvent } from "react"
+import { useState, useEffect, type FormEvent } from "react"
 import { sendFormToWhatsApp } from "@/lib/whatsapp"
 
 export default function SocialMediaPage() {
@@ -61,27 +61,22 @@ export default function SocialMediaPage() {
     },
   ]
 
-  // 🎯 EASY TO EDIT: Replace with real client testimonials and photos
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      company: "TechStart Inc.",
-      text: "PSA Studios transformed our social media presence completely. Our engagement rates have tripled, and we've seen a significant increase in qualified leads.",
-      avatar: "/images/client-1.jpeg", // ← Replace with client photo
-    },
-    {
-      name: "Michael Chen",
-      company: "Local Restaurant Chain",
-      text: "The content quality and strategic approach from PSA Studios helped us build a loyal community of food lovers. Our foot traffic increased by 40%.",
-      avatar: "/images/client-2.jpeg", // ← Replace with client photo
-    },
-    {
-      name: "Emily Rodriguez",
-      company: "Fashion Boutique",
-      text: "Working with PSA Studios was a game-changer. Their creative content and influencer partnerships helped us reach a whole new audience.",
-      avatar: "/images/client-3.jpeg", // ← Replace with client photo
-    },
-  ]
+  // Get testimonials from admin panel data
+  const [testimonials, setTestimonials] = useState<any[]>([])
+
+  useEffect(() => {
+    const savedTestimonials = localStorage.getItem("psa-testimonials")
+    if (savedTestimonials) {
+      setTestimonials(JSON.parse(savedTestimonials))
+    }
+  }, [])
+
+  // Update the currentTestimonial state to handle bounds checking
+  useEffect(() => {
+    if (testimonials.length > 0 && currentTestimonial >= testimonials.length) {
+      setCurrentTestimonial(0)
+    }
+  }, [testimonials, currentTestimonial])
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -214,40 +209,57 @@ export default function SocialMediaPage() {
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Client Testimonials</h2>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="retro-card p-12 text-center"
-          >
-            <div className="mb-8">
-              <Image
-                src={testimonials[currentTestimonial].avatar || "/placeholder.svg"}
-                alt={testimonials[currentTestimonial].name}
-                width={60}
-                height={60}
-                className="rounded-full mx-auto mb-6 border-2 border-[#C0C0C0]"
-              />
-              <blockquote className="text-lg text-[#C0C0C0] italic mb-6 font-serif font-medium">
-                "{testimonials[currentTestimonial].text}"
-              </blockquote>
-              <div className="font-bold text-[#FFFFFF]">{testimonials[currentTestimonial].name}</div>
-              <div className="text-[#C0C0C0] text-sm font-serif">{testimonials[currentTestimonial].company}</div>
-            </div>
-
-            <div className="flex justify-center space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 border border-[#C0C0C0] ${
-                    index === currentTestimonial ? "bg-[#C0C0C0]" : "bg-transparent"
-                  }`}
+          {testimonials.length > 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="retro-card p-12 text-center"
+            >
+              <div className="mb-8">
+                <Image
+                  src={testimonials[currentTestimonial]?.src || "/placeholder.svg"}
+                  alt={testimonials[currentTestimonial]?.title || "Client"}
+                  width={60}
+                  height={60}
+                  className="rounded-full mx-auto mb-6 border-2 border-[#C0C0C0]"
                 />
-              ))}
-            </div>
-          </motion.div>
+                <blockquote className="text-lg text-[#C0C0C0] italic mb-6 font-serif font-medium">
+                  "{testimonials[currentTestimonial]?.description}"
+                </blockquote>
+                <div className="font-bold text-[#FFFFFF]">{testimonials[currentTestimonial]?.title}</div>
+                <div className="text-[#C0C0C0] text-sm font-serif">{testimonials[currentTestimonial]?.category}</div>
+              </div>
+
+              <div className="flex justify-center space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-200 border border-[#C0C0C0] ${
+                      index === currentTestimonial ? "bg-[#C0C0C0]" : "bg-transparent"
+                    }`}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="retro-card p-12 text-center"
+            >
+              <div className="text-[#C0C0C0] font-serif">
+                <p className="text-lg mb-4">No testimonials available yet.</p>
+                <p className="text-sm">
+                  Add client testimonials from the admin panel to showcase your success stories.
+                </p>
+              </div>
+            </motion.div>
+          )}
         </section>
 
         {/* Contact Form */}

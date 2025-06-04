@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Navigation from "@/components/navigation"
 import Image from "next/image"
-import { Palette, Zap, Award, BookOpen, Cpu, Sparkles, ExternalLink } from "lucide-react"
+import { Palette, Zap, Award, BookOpen, Cpu, Sparkles, ExternalLink, Video } from "lucide-react"
 import { sendToWhatsApp } from "@/lib/whatsapp"
 import { useState, useEffect } from "react"
 
@@ -25,52 +25,6 @@ export default function VideoEditingPage() {
     const savedProjects = localStorage.getItem("psaStudiosProjects")
     if (savedProjects) {
       setProjects(JSON.parse(savedProjects))
-    } else {
-      // Default projects if no saved data
-      setProjects([
-        {
-          id: "1",
-          title: "Corporate Brand Film",
-          category: "Commercial",
-          description: "Professional corporate video production",
-          thumbnail: "/images/project-1.jpeg",
-        },
-        {
-          id: "2",
-          title: "Music Video Production",
-          category: "Entertainment",
-          description: "Creative music video with stunning visuals",
-          thumbnail: "/images/project-2.jpeg",
-        },
-        {
-          id: "3",
-          title: "Documentary Series",
-          category: "Documentary",
-          description: "Compelling documentary storytelling",
-          thumbnail: "/images/project-3.jpeg",
-        },
-        {
-          id: "4",
-          title: "Social Media Campaign",
-          category: "Digital",
-          description: "Engaging social media content",
-          thumbnail: "/images/project-4.jpeg",
-        },
-        {
-          id: "5",
-          title: "Event Highlight Reel",
-          category: "Event",
-          description: "Dynamic event coverage and editing",
-          thumbnail: "/images/project-5.jpeg",
-        },
-        {
-          id: "6",
-          title: "Product Showcase",
-          category: "Commercial",
-          description: "Professional product demonstration",
-          thumbnail: "/images/project-6.jpeg",
-        },
-      ])
     }
   }, [])
 
@@ -247,7 +201,6 @@ export default function VideoEditingPage() {
                     </div>
                   </div>
 
-                  {/* Project info overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                     <h3 className="font-bold text-[#FFFFFF] mb-1">{project.title}</h3>
                     <p className="text-sm text-[#C0C0C0]">{project.category}</p>
@@ -256,6 +209,13 @@ export default function VideoEditingPage() {
               </motion.div>
             ))}
           </div>
+
+          {projects.length === 0 && (
+            <div className="text-center py-12 text-white/60">
+              <Video className="w-12 h-12 mx-auto mb-4" />
+              <p>No projects yet. Add projects from the admin panel to display them here.</p>
+            </div>
+          )}
         </section>
 
         {/* Call to Action */}
