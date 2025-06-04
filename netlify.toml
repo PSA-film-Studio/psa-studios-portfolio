@@ -1,0 +1,50 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Define redirects
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Enable Netlify Identity
+[template.environment]
+  NETLIFY_IDENTITY_ENABLED = "true"
+
+# Enable Netlify Large Media for image handling
+[build.environment]
+  NETLIFY_LARGE_MEDIA_ENABLED = "true"
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Define Netlify Functions directory
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  command = "npm run dev"
+  port = 3000
+  publish = "out"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.whatsapp.com;"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
