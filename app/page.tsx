@@ -38,12 +38,12 @@ export default function HomePage() {
         }}
         transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <div className="text-center">
+        <div className="text-center px-4">
           <motion.h1
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="text-8xl md:text-9xl lg:text-[12rem] font-black text-[#FFFFFF] mb-6 bg-gradient-to-r from-[#FFFFFF] via-[#C0C0C0] to-[#FFFFFF] bg-clip-text tracking-tight"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] font-black text-[#FFFFFF] mb-6 bg-gradient-to-r from-[#FFFFFF] via-[#C0C0C0] to-[#FFFFFF] bg-clip-text tracking-tight leading-none"
           >
             PSA STUDIOS
           </motion.h1>
@@ -55,7 +55,7 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: animationPhase >= 1 ? 1 : 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="min-h-screen flex flex-col items-center justify-center p-8 relative"
+        className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 relative"
       >
         <div className="w-full max-w-6xl relative">
           {/* Small PSA Studios at top */}
@@ -63,9 +63,11 @@ export default function HomePage() {
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: animationPhase >= 1 ? 1 : 0, y: animationPhase >= 1 ? 0 : -30 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-center mb-8"
+            className="text-center mb-8 sm:mb-12"
           >
-            <h2 className="text-5xl md:text-6xl font-black text-[#FFFFFF] tracking-tight">PSA STUDIOS</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#FFFFFF] tracking-tight">
+              PSA STUDIOS
+            </h2>
           </motion.div>
 
           {/* Flowchart that appears */}
@@ -75,40 +77,40 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative flex flex-col items-center"
           >
-            {/* Central connecting line with glow effect - made even thinner */}
+            {/* Central connecting line with glow effect - hidden on mobile */}
             <motion.div
               initial={{ height: 0 }}
               animate={{
-                height: animationPhase >= 2 ? "120px" : 0,
+                height: animationPhase >= 2 ? "80px" : 0,
               }}
               transition={{
                 height: { duration: 0.8, delay: 0.5 },
               }}
-              className="w-0.5 bg-gradient-to-b from-[#C0C0C0] to-[#C0C0C0]/70 rounded-full"
+              className="hidden md:block w-0.5 bg-gradient-to-b from-[#C0C0C0] to-[#C0C0C0]/70 rounded-full"
               style={{
                 boxShadow: animationPhase >= 2 ? "0 0 8px 1px rgba(192, 192, 192, 0.4)" : "none",
               }}
             />
 
-            {/* Horizontal divider - made thinner */}
+            {/* Horizontal divider - hidden on mobile */}
             <motion.div
               initial={{ width: 0 }}
               animate={{
-                width: animationPhase >= 2 ? "820px" : 0,
+                width: animationPhase >= 2 ? "600px" : 0,
               }}
               transition={{
                 width: { duration: 0.7, delay: 1.0, ease: "easeInOut" },
               }}
-              className="h-0.5 bg-gradient-to-r from-[#C0C0C0]/70 via-[#C0C0C0] to-[#C0C0C0]/70 relative rounded-full"
+              className="hidden md:block h-0.5 bg-gradient-to-r from-[#C0C0C0]/70 via-[#C0C0C0] to-[#C0C0C0]/70 relative rounded-full"
               style={{
                 boxShadow: animationPhase >= 2 ? "0 0 8px 1px rgba(192, 192, 192, 0.4)" : "none",
               }}
             >
-              {/* Three vertical lines - made thinner */}
+              {/* Three vertical lines */}
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{
-                  height: animationPhase >= 2 ? "80px" : 0,
+                  height: animationPhase >= 2 ? "60px" : 0,
                   opacity: animationPhase >= 2 ? 1 : 0,
                 }}
                 transition={{
@@ -124,7 +126,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{
-                  height: animationPhase >= 2 ? "80px" : 0,
+                  height: animationPhase >= 2 ? "60px" : 0,
                   opacity: animationPhase >= 2 ? 1 : 0,
                 }}
                 transition={{
@@ -140,7 +142,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{
-                  height: animationPhase >= 2 ? "80px" : 0,
+                  height: animationPhase >= 2 ? "60px" : 0,
                   opacity: animationPhase >= 2 ? 1 : 0,
                 }}
                 transition={{
@@ -155,7 +157,7 @@ export default function HomePage() {
             </motion.div>
 
             {/* Service Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full max-w-6xl mt-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 w-full max-w-6xl mt-8 md:mt-20">
               {/* Cinematography */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -166,8 +168,9 @@ export default function HomePage() {
                 <Link href="/cinematography" className="group block w-full max-w-sm">
                   <motion.div
                     whileHover={{ y: -8, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -175,9 +178,13 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Camera className="w-8 h-8 text-[#FFFFFF] mb-6 mx-auto" />
-                    <h3 className="text-xl font-bold text-[#FFFFFF] mb-4 tracking-tight">CINEMATOGRAPHY</h3>
-                    <p className="text-sm text-[#C0C0C0] font-serif font-medium">Professional Video Production</p>
+                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
+                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                      CINEMATOGRAPHY
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-serif font-medium">
+                      Professional Video Production
+                    </p>
                   </motion.div>
                 </Link>
               </motion.div>
@@ -192,8 +199,9 @@ export default function HomePage() {
                 <Link href="/video-editing" className="group block w-full max-w-sm">
                   <motion.div
                     whileHover={{ y: -8, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -201,9 +209,13 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Film className="w-8 h-8 text-[#FFFFFF] mb-6 mx-auto" />
-                    <h3 className="text-xl font-bold text-[#FFFFFF] mb-4 tracking-tight">VIDEO EDITING</h3>
-                    <p className="text-sm text-[#C0C0C0] font-serif font-medium">Post-Production Excellence</p>
+                    <Film className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
+                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                      VIDEO EDITING
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-serif font-medium">
+                      Post-Production Excellence
+                    </p>
                   </motion.div>
                 </Link>
               </motion.div>
@@ -213,13 +225,14 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: animationPhase >= 2 ? 1 : 0, y: animationPhase >= 2 ? 0 : 40 }}
                 transition={{ duration: 0.7, delay: 2.7 }}
-                className="flex justify-center"
+                className="flex justify-center sm:col-span-2 lg:col-span-1"
               >
                 <Link href="/social-media" className="group block w-full max-w-sm">
                   <motion.div
                     whileHover={{ y: -8, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -227,9 +240,13 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Share2 className="w-8 h-8 text-[#FFFFFF] mb-6 mx-auto" />
-                    <h3 className="text-xl font-bold text-[#FFFFFF] mb-4 tracking-tight">SOCIAL MEDIA</h3>
-                    <p className="text-sm text-[#C0C0C0] font-serif font-medium">Strategic Content Creation</p>
+                    <Share2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
+                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                      SOCIAL MEDIA
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-serif font-medium">
+                      Strategic Content Creation
+                    </p>
                   </motion.div>
                 </Link>
               </motion.div>

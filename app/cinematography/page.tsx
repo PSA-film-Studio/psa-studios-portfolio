@@ -143,8 +143,6 @@ export default function CinematographyPage() {
     if (item.type === "url" && item.externalUrl) {
       window.open(item.externalUrl, "_blank")
     } else if (item.type === "video") {
-      // For videos, you could implement a video modal or just play inline
-      // For now, we'll treat them like external links if they have a src
       if (item.src.startsWith("http")) {
         window.open(item.src, "_blank")
       }
@@ -191,9 +189,9 @@ export default function CinematographyPage() {
   const getMediaIcon = (type: string) => {
     switch (type) {
       case "video":
-        return <Play className="w-6 h-6" />
+        return <Play className="w-4 h-4 sm:w-6 sm:h-6" />
       case "url":
-        return <ExternalLink className="w-6 h-6" />
+        return <ExternalLink className="w-4 h-4 sm:w-6 sm:h-6" />
       default:
         return null
     }
@@ -203,24 +201,26 @@ export default function CinematographyPage() {
     <div className="min-h-screen text-[#FFFFFF]" style={{ background: "#000000" }}>
       <Navigation />
 
-      <main className="pt-24 pb-16">
+      <main className="pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-12 md:pb-16">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16 px-6"
+          className="text-center mb-8 sm:mb-12 md:mb-16 px-4 sm:px-6"
         >
-          <h1 className="text-4xl md:text-6xl font-black text-[#FFFFFF] mb-6 tracking-tight">CINEMATOGRAPHY</h1>
-          <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium leading-relaxed">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#FFFFFF] mb-4 sm:mb-6 tracking-tight">
+            CINEMATOGRAPHY
+          </h1>
+          <p className="text-sm sm:text-base lg:text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium leading-relaxed">
             Capturing moments through the lens of creativity and technical excellence. Our cinematography brings stories
             to life with stunning visuals.
           </p>
         </motion.div>
 
-        {/* Gallery Grid - Uniform 3-column layout */}
-        <div ref={ref} className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Gallery Grid - Mobile optimized */}
+        <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {galleryItems.map((item, index) => (
               <motion.div
                 key={item.id}
@@ -238,6 +238,7 @@ export default function CinematographyPage() {
                       fill
                       className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
                       onClick={() => handleItemClick(index)}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : item.type === "video" ? (
                     <>
@@ -247,11 +248,12 @@ export default function CinematographyPage() {
                         fill
                         className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
                         onClick={() => handleItemClick(index)}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                       {/* Video Play Icon Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-black/70 rounded-full p-4 group-hover:bg-black/80 transition-colors duration-300">
-                          <Play className="w-8 h-8 text-white fill-white" />
+                        <div className="bg-black/70 rounded-full p-3 sm:p-4 group-hover:bg-black/80 transition-colors duration-300">
+                          <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white fill-white" />
                         </div>
                       </div>
                     </>
@@ -263,11 +265,12 @@ export default function CinematographyPage() {
                         fill
                         className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
                         onClick={() => handleItemClick(index)}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                       {/* External Link Icon */}
-                      <div className="absolute top-4 right-4">
-                        <div className="bg-black/70 rounded-full p-2">
-                          <ExternalLink className="w-5 h-5 text-white" />
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+                        <div className="bg-black/70 rounded-full p-1.5 sm:p-2">
+                          <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
                       </div>
                     </>
@@ -278,14 +281,19 @@ export default function CinematographyPage() {
 
                   {/* Hover Action Button */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-[#FFFFFF]/90 text-[#000000] px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                    <div className="bg-[#FFFFFF]/90 text-[#000000] px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2">
                       {getMediaIcon(item.type)}
-                      {item.type === "image" ? "View Image" : item.type === "video" ? "Play Video" : "Open Link"}
+                      <span className="hidden sm:inline">
+                        {item.type === "image" ? "View Image" : item.type === "video" ? "Play Video" : "Open Link"}
+                      </span>
+                      <span className="sm:hidden">
+                        {item.type === "image" ? "View" : item.type === "video" ? "Play" : "Open"}
+                      </span>
                     </div>
                   </div>
 
                   {/* Media Type Badge */}
-                  <div className="absolute top-4 left-4">
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
                     <div className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium capitalize">
                       {item.type === "url" ? "External" : item.type}
                     </div>
@@ -293,8 +301,8 @@ export default function CinematographyPage() {
                 </div>
 
                 {/* Item Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="text-white font-bold text-sm mb-1 line-clamp-1">{item.title}</h3>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="text-white font-bold text-xs sm:text-sm mb-1 line-clamp-1">{item.title}</h3>
                   <p className="text-white/80 text-xs line-clamp-2">{item.description}</p>
                 </div>
               </motion.div>
@@ -303,10 +311,10 @@ export default function CinematographyPage() {
 
           {/* Empty State */}
           {galleryItems.length === 0 && (
-            <div className="text-center py-16">
+            <div className="text-center py-12 sm:py-16">
               <div className="text-[#C0C0C0]/60 mb-4">
-                <ExternalLink className="w-16 h-16 mx-auto mb-4" />
-                <p className="text-lg">No cinematography items yet.</p>
+                <ExternalLink className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4" />
+                <p className="text-base sm:text-lg">No cinematography items yet.</p>
                 <p className="text-sm">Add some content through the studio management panel.</p>
               </div>
             </div>
@@ -319,10 +327,12 @@ export default function CinematographyPage() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mt-24 px-6"
+          className="text-center mt-16 sm:mt-20 md:mt-24 px-4 sm:px-6"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-[#FFFFFF] mb-6">Ready to bring your vision to life?</h2>
-          <p className="text-[#C0C0C0] mb-8 max-w-xl mx-auto font-serif font-medium">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FFFFFF] mb-4 sm:mb-6">
+            Ready to bring your vision to life?
+          </h2>
+          <p className="text-sm sm:text-base text-[#C0C0C0] mb-6 sm:mb-8 max-w-xl mx-auto font-serif font-medium">
             Let's collaborate to create stunning cinematography that tells your story with impact and artistry.
           </p>
           <motion.button
@@ -331,20 +341,20 @@ export default function CinematographyPage() {
             onClick={() =>
               sendToWhatsApp("Hi! I'm interested in your cinematography services. I'd like to discuss my project.")
             }
-            className="bg-[#C0C0C0] text-[#000000] px-8 py-3 rounded-full font-bold hover:bg-[#FFFFFF] transition-colors duration-200 shadow-lg"
+            className="bg-[#C0C0C0] text-[#000000] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold hover:bg-[#FFFFFF] transition-colors duration-200 shadow-lg text-sm sm:text-base"
           >
             Start Your Project
           </motion.button>
         </motion.div>
       </main>
 
-      {/* Lightbox Modal with Navigation */}
+      {/* Lightbox Modal with Navigation - Mobile optimized */}
       {selectedImageIndex !== null && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2 sm:p-4"
           onClick={closeLightbox}
         >
           <motion.div
@@ -360,23 +370,24 @@ export default function CinematographyPage() {
               alt={imageItems[selectedImageIndex]?.description || "Cinematography image"}
               fill
               className="object-contain"
+              sizes="100vw"
             />
 
             {/* Close Button */}
             <button
               onClick={closeLightbox}
-              className="absolute top-4 right-4 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 rounded-full transition-colors duration-200 z-10"
+              className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 rounded-full transition-colors duration-200 z-10"
             >
-              <X size={24} />
+              <X size={20} className="sm:w-6 sm:h-6" />
             </button>
 
             {/* Previous Button */}
             {imageItems.length > 1 && (
               <button
                 onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-3 rounded-full transition-colors duration-200 z-10"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 sm:p-3 rounded-full transition-colors duration-200 z-10"
               >
-                <ChevronLeft size={28} />
+                <ChevronLeft size={20} className="sm:w-7 sm:h-7" />
               </button>
             )}
 
@@ -384,15 +395,15 @@ export default function CinematographyPage() {
             {imageItems.length > 1 && (
               <button
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-3 rounded-full transition-colors duration-200 z-10"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 sm:p-3 rounded-full transition-colors duration-200 z-10"
               >
-                <ChevronRight size={28} />
+                <ChevronRight size={20} className="sm:w-7 sm:h-7" />
               </button>
             )}
 
             {/* Image Counter */}
             {imageItems.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#FFFFFF]/20 text-[#FFFFFF] px-4 py-2 rounded-full text-sm">
+              <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 bg-[#FFFFFF]/20 text-[#FFFFFF] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm">
                 {selectedImageIndex + 1} of {imageItems.length}
               </div>
             )}
