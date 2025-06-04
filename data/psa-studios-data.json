@@ -1,6 +1,24 @@
 {
-  "mediaItems": [],
+  "mediaItems": [
+    {
+      "type": "image",
+      "title": "test",
+      "description": "test",
+      "src": "https://res.cloudinary.com/db7yk3uhq/image/upload/v1749035786/nisvlyhbmbjubewkxqgn.png",
+      "thumbnail": "",
+      "category": "cinematography",
+      "isExternal": false,
+      "externalUrl": "",
+      "sourceType": "url",
+      "layout": {
+        "colSpan": "md:col-span-1",
+        "rowSpan": "md:row-span-1",
+        "aspectRatio": "aspect-square"
+      },
+      "id": "1749035791280"
+    }
+  ],
   "projects": [],
-  "lastUpdated": "2025-06-04T11:15:46.141Z",
+  "lastUpdated": "2025-06-04T11:16:40.501Z",
   "version": "1.0"
 }
