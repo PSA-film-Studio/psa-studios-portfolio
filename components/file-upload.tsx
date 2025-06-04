@@ -9,10 +9,9 @@ import { Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 
 interface FileUploadProps {
   onFileUploaded: (filePath: string) => void
-  accept?: string
 }
 
-export function FileUpload({ onFileUploaded, accept = "image/*,video/*" }: FileUploadProps) {
+export function FileUpload({ onFileUploaded }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<{
@@ -53,11 +52,11 @@ export function FileUpload({ onFileUploaded, accept = "image/*,video/*" }: FileU
     setUploadStatus({ type: null, message: "" })
 
     // Client-side validation
-    const maxSize = 10 * 1024 * 1024 // 10MB
+    const maxSize = 4 * 1024 * 1024 // 4MB (Vercel Blob limit)
     if (file.size > maxSize) {
       setUploadStatus({
         type: "error",
-        message: "File size must be less than 10MB",
+        message: "File size must be less than 4MB",
       })
       setIsUploading(false)
       return
@@ -89,6 +88,8 @@ export function FileUpload({ onFileUploaded, accept = "image/*,video/*" }: FileU
           message: `File uploaded successfully! (${(file.size / 1024 / 1024).toFixed(2)}MB)`,
           filePath: result.filePath,
         })
+        // Auto-fill the path in the parent form
+        onFileUploaded(result.filePath)
       } else {
         setUploadStatus({
           type: "error",
@@ -129,11 +130,11 @@ export function FileUpload({ onFileUploaded, accept = "image/*,video/*" }: FileU
             <Upload className="h-12 w-12 text-gray-400" />
             <div>
               <p className="text-lg font-medium">{isDragging ? "Drop your file here" : "Drag & drop your file here"}</p>
-              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 10MB)</p>
+              <p className="text-sm text-gray-500 mt-1">Or click to browse (Images & Videos, max 5MB)</p>
             </div>
             <input
               type="file"
-              accept={accept}
+              accept="image/*,video/*"
               onChange={handleFileSelect}
               className="hidden"
               id="file-upload"

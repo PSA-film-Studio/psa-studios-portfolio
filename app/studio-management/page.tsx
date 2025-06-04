@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import {
   Plus,
   Edit,
@@ -17,11 +18,6 @@ import {
   Upload,
   Globe,
   CloudIcon,
-  Cloud,
-  Github,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,7 +29,6 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import { FileUpload } from "@/components/file-upload"
 import { ExternalServiceUpload } from "@/components/external-service-upload"
-import { CloudinaryUpload } from "@/components/cloudinary-upload"
 
 interface MediaItem {
   id: string
@@ -45,12 +40,7 @@ interface MediaItem {
   category: "cinematography" | "video-editing" | "social-media"
   isExternal?: boolean
   externalUrl?: string
-  sourceType: "file" | "url"
-  layout: {
-    colSpan: string
-    rowSpan: string
-    aspectRatio: string
-  }
+  sourceType: "file" | "url" // New field to distinguish between file upload and URL
 }
 
 interface Project {
@@ -64,11 +54,6 @@ interface Project {
   sourceType: "file" | "url"
 }
 
-interface GitHubSaveStatus {
-  type: "success" | "error" | "loading" | null
-  message: string
-}
-
 export default function AdminPanel() {
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -78,277 +63,101 @@ export default function AdminPanel() {
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [showAddMedia, setShowAddMedia] = useState(false)
   const [showAddProject, setShowAddProject] = useState(false)
-  const [githubSaveStatus, setGithubSaveStatus] = useState<GitHubSaveStatus>({ type: null, message: "" })
-
-  // GitHub configuration
-  const [githubConfig, setGithubConfig] = useState({
-    token: "",
-    repo: "",
-    owner: "",
-  })
 
   // Simple authentication
   const handleLogin = () => {
     if (password === "PSA.website.@#!") {
       setIsAuthenticated(true)
       loadData()
-      loadGithubConfig()
     } else {
       alert("Incorrect password")
     }
   }
 
-  // Load GitHub config from localStorage
-  const loadGithubConfig = () => {
-    try {
-      const savedConfig = localStorage.getItem("psaStudiosGithubConfig")
-      if (savedConfig) {
-        setGithubConfig(JSON.parse(savedConfig))
-      }
-    } catch (error) {
-      console.error("Error loading GitHub config:", error)
-    }
-  }
-
-  // Save GitHub config to localStorage
-  const saveGithubConfig = () => {
-    try {
-      localStorage.setItem("psaStudiosGithubConfig", JSON.stringify(githubConfig))
-    } catch (error) {
-      console.error("Error saving GitHub config:", error)
-    }
-  }
-
-  // Save changes to GitHub
-  const saveToGithub = async () => {
-    if (!githubConfig.token || !githubConfig.repo || !githubConfig.owner) {
-      setGithubSaveStatus({
-        type: "error",
-        message: "Please configure GitHub settings first (Token, Repository, Owner)",
-      })
-      return
-    }
-
-    setGithubSaveStatus({ type: "loading", message: "Saving to GitHub..." })
-
-    try {
-      // Prepare the data to save
-      const dataToSave = {
-        mediaItems,
-        projects,
-        lastUpdated: new Date().toISOString(),
-        version: "1.0",
-      }
-
-      // Create the file content
-      const fileContent = JSON.stringify(dataToSave, null, 2)
-      const encodedContent = btoa(fileContent)
-
-      // Check if file exists first
-      let sha = null
-      try {
-        const existingFileResponse = await fetch(
-          `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/data/psa-studios-data.json`,
-          {
-            headers: {
-              Authorization: `token ${githubConfig.token}`,
-              "Content-Type": "application/json",
-            },
-          },
-        )
-
-        if (existingFileResponse.ok) {
-          const existingFile = await existingFileResponse.json()
-          sha = existingFile.sha
-        }
-      } catch (error) {
-        console.log("File doesn't exist yet, will create new one")
-      }
-
-      // Create or update the file
-      const response = await fetch(
-        `https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/data/psa-studios-data.json`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `token ${githubConfig.token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: `Update PSA Studios data - ${new Date().toLocaleString()}`,
-            content: encodedContent,
-            ...(sha && { sha }),
-          }),
-        },
-      )
-
-      if (response.ok) {
-        const result = await response.json()
-        setGithubSaveStatus({
-          type: "success",
-          message: `Successfully saved to GitHub! Commit: ${result.commit.sha.substring(0, 7)}`,
-        })
-      } else {
-        const error = await response.json()
-        throw new Error(error.message || "Failed to save to GitHub")
-      }
-    } catch (error) {
-      setGithubSaveStatus({
-        type: "error",
-        message: error instanceof Error ? error.message : "Failed to save to GitHub",
-      })
-    }
-  }
-
   // Load data from localStorage
   const loadData = () => {
-    try {
-      const savedMedia = localStorage.getItem("psaStudiosMedia")
-      const savedProjects = localStorage.getItem("psaStudiosProjects")
+    const savedMedia = localStorage.getItem("psaStudiosMedia")
+    const savedProjects = localStorage.getItem("psaStudiosProjects")
 
-      if (savedMedia) {
-        const parsedMedia = JSON.parse(savedMedia)
-        // Ensure all media items have layout property
-        const mediaWithLayout = parsedMedia.map((item: any) => ({
-          ...item,
-          layout: item.layout || {
-            colSpan: "md:col-span-1",
-            rowSpan: "md:row-span-1",
-            aspectRatio: item.type === "video" ? "aspect-video" : "aspect-square",
-          },
-        }))
-        setMediaItems(mediaWithLayout)
-      } else {
-        // Default data with mixed media types
-        setMediaItems([
-          {
-            id: "1",
-            type: "image",
-            title: "Cinematic Portrait",
-            description: "Dramatic lighting cinematography",
-            src: "/placeholder.svg?height=400&width=600",
-            category: "cinematography",
-            sourceType: "file",
-            layout: { colSpan: "md:col-span-2", rowSpan: "md:row-span-2", aspectRatio: "aspect-[16/10]" },
-          },
-          {
-            id: "2",
-            type: "video",
-            title: "Behind the Scenes",
-            description: "Video editing process showcase",
-            src: "/placeholder.svg?height=400&width=600",
-            thumbnail: "/placeholder.svg?height=400&width=600",
-            category: "video-editing",
-            sourceType: "url",
-            layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
-          },
-          {
-            id: "3",
-            type: "external-link",
-            title: "YouTube Showcase",
-            description: "Our latest video editing reel",
-            src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            thumbnail: "/placeholder.svg?height=400&width=600",
-            category: "social-media",
-            isExternal: true,
-            externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            sourceType: "url",
-            layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
-          },
-        ])
-      }
+    if (savedMedia) {
+      setMediaItems(JSON.parse(savedMedia))
+    } else {
+      // Default data with mixed media types
+      setMediaItems([
+        {
+          id: "1",
+          type: "image",
+          title: "Cinematic Portrait",
+          description: "Dramatic lighting cinematography",
+          src: "/images/cinematography-1.jpeg",
+          category: "cinematography",
+          sourceType: "file",
+        },
+        {
+          id: "2",
+          type: "video",
+          title: "Behind the Scenes",
+          description: "Video editing process showcase",
+          src: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+          thumbnail: "/images/video-thumb-1.jpeg",
+          category: "video-editing",
+          sourceType: "url",
+        },
+        {
+          id: "3",
+          type: "external-link",
+          title: "YouTube Showcase",
+          description: "Our latest video editing reel",
+          src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          thumbnail: "/images/youtube-thumbnail.jpeg",
+          category: "social-media",
+          isExternal: true,
+          externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          sourceType: "url",
+        },
+      ])
+    }
 
-      if (savedProjects) {
-        setProjects(JSON.parse(savedProjects))
-      } else {
-        // Default projects
-        setProjects([
-          {
-            id: "1",
-            title: "Corporate Brand Film",
-            category: "Commercial",
-            description: "Professional corporate video production",
-            thumbnail: "/placeholder.svg?height=400&width=600",
-            sourceType: "file",
-          },
-          {
-            id: "2",
-            title: "Music Video",
-            category: "Entertainment",
-            description: "Creative music video production",
-            thumbnail: "/placeholder.svg?height=400&width=600",
-            sourceType: "url",
-          },
-        ])
-      }
-    } catch (error) {
-      console.error("Error loading data:", error)
-      setMediaItems([])
-      setProjects([])
+    if (savedProjects) {
+      setProjects(JSON.parse(savedProjects))
+    } else {
+      // Default projects
+      setProjects([
+        {
+          id: "1",
+          title: "Corporate Brand Film",
+          category: "Commercial",
+          description: "Professional corporate video production",
+          thumbnail: "/images/project-1.jpeg",
+          sourceType: "file",
+        },
+        {
+          id: "2",
+          title: "Music Video",
+          category: "Entertainment",
+          description: "Creative music video production",
+          thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500",
+          sourceType: "url",
+        },
+      ])
     }
   }
 
   // Save data to localStorage
   const saveData = () => {
-    try {
-      const mediaData = JSON.stringify(mediaItems)
-      const projectData = JSON.stringify(projects)
-
-      localStorage.setItem("psaStudiosMedia", mediaData)
-      localStorage.setItem("psaStudiosProjects", projectData)
-
-      console.log("✅ Data saved to localStorage:", {
-        mediaCount: mediaItems.length,
-        projectCount: projects.length,
-        rawMediaData: mediaData.substring(0, 200) + "...",
-        mediaItems: mediaItems.map((item) => ({
-          id: item.id,
-          title: item.title,
-          category: item.category,
-          type: item.type,
-          src: item.src.substring(0, 50) + "...",
-        })),
-      })
-
-      // Verify the data was actually saved
-      const verification = localStorage.getItem("psaStudiosMedia")
-      if (verification) {
-        const parsed = JSON.parse(verification)
-        console.log("🔍 Verification - Items in localStorage:", parsed.length)
-        console.log(
-          "🔍 Verification - Categories:",
-          parsed.map((item: any) => `${item.title}: ${item.category}`),
-        )
-      } else {
-        console.error("❌ Failed to save to localStorage!")
-      }
-
-      // Trigger custom event for same-tab updates
-      window.dispatchEvent(new CustomEvent("localStorageUpdate"))
-    } catch (error) {
-      console.error("❌ Error saving data:", error)
-    }
+    localStorage.setItem("psaStudiosMedia", JSON.stringify(mediaItems))
+    localStorage.setItem("psaStudiosProjects", JSON.stringify(projects))
   }
 
   useEffect(() => {
     saveData()
   }, [mediaItems, projects])
 
-  useEffect(() => {
-    saveGithubConfig()
-  }, [githubConfig])
-
   const handleAddMediaItem = (newItem: Omit<MediaItem, "id">) => {
     const item: MediaItem = {
       ...newItem,
       id: Date.now().toString(),
-      layout: newItem.layout || {
-        colSpan: "md:col-span-1",
-        rowSpan: "md:row-span-1",
-        aspectRatio: newItem.type === "video" ? "aspect-video" : "aspect-square",
-      },
     }
-    console.log("Adding new media item:", item)
     setMediaItems([...mediaItems, item])
     setShowAddMedia(false)
   }
@@ -387,7 +196,11 @@ export default function AdminPanel() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 max-w-md w-full mx-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 max-w-md w-full mx-4"
+        >
           <h1 className="text-2xl font-bold text-white mb-6 text-center">PSA Studios Management</h1>
           <div className="space-y-4">
             <Input
@@ -402,7 +215,7 @@ export default function AdminPanel() {
               Access Studio Management
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     )
   }
@@ -410,7 +223,7 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold">PSA Studios Management Panel</h1>
             <div className="flex gap-4">
@@ -423,18 +236,6 @@ export default function AdminPanel() {
                 Preview Site
               </Button>
               <Button
-                onClick={saveToGithub}
-                disabled={githubSaveStatus.type === "loading"}
-                className="bg-green-600 hover:bg-green-700 text-white"
-              >
-                {githubSaveStatus.type === "loading" ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Github className="w-4 h-4 mr-2" />
-                )}
-                Save to GitHub
-              </Button>
-              <Button
                 onClick={() => setIsAuthenticated(false)}
                 variant="outline"
                 className="border-red-500/50 text-red-400 hover:bg-red-500/10"
@@ -443,105 +244,6 @@ export default function AdminPanel() {
               </Button>
             </div>
           </div>
-
-          {/* GitHub Save Status */}
-          {githubSaveStatus.type && (
-            <Card
-              className={`mb-6 ${
-                githubSaveStatus.type === "success"
-                  ? "border-green-200 bg-green-50/10"
-                  : githubSaveStatus.type === "error"
-                    ? "border-red-200 bg-red-50/10"
-                    : "border-blue-200 bg-blue-50/10"
-              }`}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-start space-x-3">
-                  {githubSaveStatus.type === "success" ? (
-                    <CheckCircle className="h-5 w-5 text-green-400 mt-0.5" />
-                  ) : githubSaveStatus.type === "error" ? (
-                    <AlertCircle className="h-5 w-5 text-red-400 mt-0.5" />
-                  ) : (
-                    <Loader2 className="h-5 w-5 text-blue-400 mt-0.5 animate-spin" />
-                  )}
-                  <div className="flex-1">
-                    <p
-                      className={`font-medium ${
-                        githubSaveStatus.type === "success"
-                          ? "text-green-300"
-                          : githubSaveStatus.type === "error"
-                            ? "text-red-300"
-                            : "text-blue-300"
-                      }`}
-                    >
-                      {githubSaveStatus.message}
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => setGithubSaveStatus({ type: null, message: "" })}
-                    variant="ghost"
-                    size="sm"
-                    className="text-white/60 hover:text-white"
-                  >
-                    ×
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* GitHub Configuration */}
-          <Card className="mb-6 border-blue-200/20 bg-blue-50/5">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Github className="w-5 h-5" />
-                GitHub Configuration
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">GitHub Token</label>
-                  <Input
-                    type="password"
-                    value={githubConfig.token}
-                    onChange={(e) => setGithubConfig({ ...githubConfig, token: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="ghp_xxxxxxxxxxxx"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Repository Owner</label>
-                  <Input
-                    value={githubConfig.owner}
-                    onChange={(e) => setGithubConfig({ ...githubConfig, owner: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="your-username"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Repository Name</label>
-                  <Input
-                    value={githubConfig.repo}
-                    onChange={(e) => setGithubConfig({ ...githubConfig, repo: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="your-repo-name"
-                  />
-                </div>
-              </div>
-              <p className="text-xs text-white/60">
-                Create a GitHub Personal Access Token with 'repo' permissions at{" "}
-                <a
-                  href="https://github.com/settings/tokens"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
-                >
-                  github.com/settings/tokens
-                </a>
-              </p>
-            </CardContent>
-          </Card>
 
           <Tabs defaultValue="media" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-white/10">
@@ -560,16 +262,6 @@ export default function AdminPanel() {
                   <Plus className="w-4 h-4 mr-2" />
                   Add Media
                 </Button>
-              </div>
-
-              {/* Debug Info */}
-              <div className="bg-white/5 p-4 rounded-lg">
-                <p className="text-sm text-white/70">
-                  Total Media Items: {mediaItems.length} | Cinematography:{" "}
-                  {mediaItems.filter((item) => item.category === "cinematography").length} | Video Editing:{" "}
-                  {mediaItems.filter((item) => item.category === "video-editing").length} | Social Media:{" "}
-                  {mediaItems.filter((item) => item.category === "social-media").length}
-                </p>
               </div>
 
               {/* Uniform 3-column grid */}
@@ -668,7 +360,7 @@ export default function AdminPanel() {
               )}
             </TabsContent>
           </Tabs>
-        </div>
+        </motion.div>
       </div>
     </div>
   )
@@ -934,14 +626,9 @@ function MediaItemForm({
     isExternal: item?.isExternal || false,
     externalUrl: item?.externalUrl || "",
     sourceType: item?.sourceType || ("file" as "file" | "url"),
-    layout: item?.layout || {
-      colSpan: "md:col-span-1",
-      rowSpan: "md:row-span-1",
-      aspectRatio: "aspect-square",
-    },
   })
 
-  const [uploadMethod, setUploadMethod] = useState<"file-upload" | "url" | "cloudinary">("file-upload")
+  const [uploadMethod, setUploadMethod] = useState<"file-upload" | "url">("file-upload")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -967,14 +654,7 @@ function MediaItemForm({
       ...formData,
       isExternal: formData.type === "external-link",
       externalUrl: formData.type === "external-link" ? formData.src : formData.externalUrl,
-      layout: {
-        colSpan: "md:col-span-1",
-        rowSpan: "md:row-span-1",
-        aspectRatio: formData.type === "video" ? "aspect-video" : "aspect-square",
-      },
     }
-
-    console.log("Submitting media item:", finalData)
 
     if (item) {
       onSubmit({ ...item, ...finalData })
@@ -987,7 +667,7 @@ function MediaItemForm({
     setFormData({
       ...formData,
       src: filePath,
-      sourceType: "url", // Cloudinary URLs should be marked as URL type
+      sourceType: "file",
     })
   }
 
@@ -1077,11 +757,8 @@ function MediaItemForm({
         <h3 className="text-lg font-semibold border-b border-white/20 pb-2">Media Source</h3>
 
         <div className="bg-white/5 rounded-lg p-4">
-          <Tabs
-            defaultValue="file-upload"
-            onValueChange={(value) => setUploadMethod(value as "file-upload" | "url" | "cloudinary")}
-          >
-            <TabsList className="grid w-full grid-cols-3 bg-white/10">
+          <Tabs defaultValue="file-upload" onValueChange={(value) => setUploadMethod(value as "file-upload" | "url")}>
+            <TabsList className="grid w-full grid-cols-2 bg-white/10">
               <TabsTrigger value="file-upload" className="data-[state=active]:bg-white data-[state=active]:text-black">
                 <Upload className="w-4 h-4 mr-2" />
                 File Upload
@@ -1089,10 +766,6 @@ function MediaItemForm({
               <TabsTrigger value="url" className="data-[state=active]:bg-white data-[state=active]:text-black">
                 <CloudIcon className="w-4 h-4 mr-2" />
                 URL / External
-              </TabsTrigger>
-              <TabsTrigger value="cloudinary" className="data-[state=active]:bg-white data-[state=active]:text-black">
-                <Cloud className="w-4 h-4 mr-2" />
-                Cloudinary CDN
               </TabsTrigger>
             </TabsList>
 
@@ -1102,19 +775,6 @@ function MediaItemForm({
 
             <TabsContent value="url" className="mt-4">
               <ExternalServiceUpload onMediaSelected={handleExternalMediaSelected} />
-            </TabsContent>
-
-            <TabsContent value="cloudinary" className="mt-4">
-              <CloudinaryUpload
-                onFileUploaded={(url) => {
-                  setFormData({
-                    ...formData,
-                    src: url,
-                    sourceType: "url",
-                  })
-                }}
-                resourceType={formData.type === "video" ? "video" : "image"}
-              />
             </TabsContent>
           </Tabs>
         </div>
@@ -1247,6 +907,7 @@ function ProjectForm({
 
     if (!formData.description.trim()) {
       alert("Please enter a description")
+      return
     }
 
     if (project) {

@@ -15,20 +15,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Only image and video files are allowed" }, { status: 400 })
     }
 
-    // Validate file size (10MB limit)
-    const maxSize = 10 * 1024 * 1024 // 10MB
+    // Validate file size (4MB limit for Vercel Blob)
+    const maxSize = 4 * 1024 * 1024 // 4MB
     if (file.size > maxSize) {
-      return NextResponse.json({ error: "File size must be less than 10MB" }, { status: 400 })
+      return NextResponse.json({ error: "File size must be less than 4MB" }, { status: 400 })
     }
 
-    // Determine folder based on file type
-    const folder = file.type.startsWith("image/") ? "images" : "videos"
-    const fileName = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`
+    // Generate a unique filename
+    const timestamp = Date.now()
+    const randomString = Math.random().toString(36).substring(2, 8)
+    const fileExtension = file.name.split(".").pop()
+    const fileName = `${timestamp}-${randomString}.${fileExtension}`
 
     // Upload to Vercel Blob
     const blob = await put(fileName, file, {
       access: "public",
-      addRandomSuffix: true,
     })
 
     return NextResponse.json({
