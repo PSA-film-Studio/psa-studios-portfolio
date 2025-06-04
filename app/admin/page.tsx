@@ -66,7 +66,7 @@ export default function AdminPanel() {
 
   // Simple authentication
   const handleLogin = () => {
-    if (password === "psastudios2024") {
+    if (password === "PSA.website.@#!") {
       setIsAuthenticated(true)
       loadData()
     } else {
@@ -215,7 +215,7 @@ export default function AdminPanel() {
               Login
             </Button>
           </div>
-          <p className="text-white/60 text-sm mt-4 text-center">Password: psastudios2024</p>
+        
         </motion.div>
       </div>
     )
