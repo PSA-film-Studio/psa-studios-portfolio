@@ -19,10 +19,10 @@ export default function AdminLink() {
       {showAdmin && (
         <div className="absolute bottom-16 right-0 bg-black/90 backdrop-blur-md border border-white/20 rounded-lg p-4 min-w-[200px]">
           <Link
-            href="/admin"
+            href="/studio-management"
             className="block text-white hover:text-gray-300 transition-colors duration-200 text-sm font-medium"
           >
-            Admin Panel
+            Studio Management
           </Link>
         </div>
       )}
