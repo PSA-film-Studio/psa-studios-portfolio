@@ -10,7 +10,7 @@ import { sendToWhatsApp } from "@/lib/whatsapp"
 
 interface MediaItem {
   id: string
-  type: "image" | "video" | "url"
+  type: "image" | "video" | "external-link"
   title: string
   description: string
   src: string
@@ -23,6 +23,7 @@ interface MediaItem {
   }
   isExternal?: boolean
   externalUrl?: string
+  sourceType?: "file" | "url"
 }
 
 export default function CinematographyPage() {
@@ -30,48 +31,104 @@ export default function CinematographyPage() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
   const [galleryItems, setGalleryItems] = useState<MediaItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Load gallery items from localStorage or use defaults
+  // Load gallery items from localStorage
   useEffect(() => {
-    const savedMedia = localStorage.getItem("psaStudiosMedia")
-    if (savedMedia) {
-      const allMedia = JSON.parse(savedMedia)
-      const cinematographyItems = allMedia.filter((item: MediaItem) => item.category === "cinematography")
-      setGalleryItems(cinematographyItems)
-    } else {
-      // Default items if no saved data
-      setGalleryItems([
-        {
-          id: "1",
-          type: "image",
-          title: "Cinematic Portrait",
-          description: "Dramatic lighting cinematography",
-          src: "/images/cinematography-1.jpeg",
-          category: "cinematography",
-          layout: { colSpan: "md:col-span-2", rowSpan: "md:row-span-2", aspectRatio: "aspect-[16/10]" },
-        },
-        {
-          id: "2",
-          type: "image",
-          title: "Moody Interior",
-          description: "Atmospheric interior shot",
-          src: "/images/cinematography-2.jpeg",
-          category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-square" },
-        },
-        {
-          id: "3",
-          type: "url",
-          title: "Cinematography Reel",
-          description: "Our latest cinematography showcase",
-          src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-          thumbnail: "/images/cinematography-3.jpeg",
-          category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
-          isExternal: true,
-          externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        },
-      ])
+    const loadMediaItems = () => {
+      try {
+        const savedMedia = localStorage.getItem("psaStudiosMedia")
+        console.log("Loading media from localStorage:", savedMedia)
+
+        if (savedMedia) {
+          const allMedia = JSON.parse(savedMedia)
+          console.log("All media items:", allMedia)
+
+          const cinematographyItems = allMedia.filter((item: any) => {
+            console.log("Checking item:", item, "Category:", item.category)
+            return item.category === "cinematography"
+          })
+
+          console.log("Cinematography items found:", cinematographyItems)
+
+          // Ensure all items have layout property
+          const itemsWithLayout = cinematographyItems.map((item: any) => ({
+            ...item,
+            layout: item.layout || {
+              colSpan: "md:col-span-1",
+              rowSpan: "md:row-span-1",
+              aspectRatio: item.type === "video" ? "aspect-video" : "aspect-square",
+            },
+          }))
+
+          setGalleryItems(itemsWithLayout)
+        } else {
+          console.log("No saved media found, using defaults")
+          // Default items if no saved data
+          setGalleryItems([
+            {
+              id: "default-1",
+              type: "image",
+              title: "Cinematic Portrait",
+              description: "Dramatic lighting cinematography",
+              src: "/placeholder.svg?height=400&width=600",
+              category: "cinematography",
+              layout: { colSpan: "md:col-span-2", rowSpan: "md:row-span-2", aspectRatio: "aspect-[16/10]" },
+            },
+            {
+              id: "default-2",
+              type: "image",
+              title: "Moody Interior",
+              description: "Atmospheric interior shot",
+              src: "/placeholder.svg?height=400&width=600",
+              category: "cinematography",
+              layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-square" },
+            },
+            {
+              id: "default-3",
+              type: "external-link",
+              title: "Cinematography Reel",
+              description: "Our latest cinematography showcase",
+              src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              thumbnail: "/placeholder.svg?height=400&width=600",
+              category: "cinematography",
+              layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
+              isExternal: true,
+              externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            },
+          ])
+        }
+      } catch (error) {
+        console.error("Error loading media:", error)
+        setGalleryItems([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    // Load immediately
+    loadMediaItems()
+
+    // Listen for storage changes (when admin panel updates data)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "psaStudiosMedia") {
+        console.log("Storage changed, reloading media")
+        loadMediaItems()
+      }
+    }
+
+    // Listen for custom events (for same-tab updates)
+    const handleCustomStorageChange = () => {
+      console.log("Custom storage event, reloading media")
+      loadMediaItems()
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    window.addEventListener("localStorageUpdate", handleCustomStorageChange)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+      window.removeEventListener("localStorageUpdate", handleCustomStorageChange)
     }
   }, [])
 
@@ -80,7 +137,7 @@ export default function CinematographyPage() {
 
   const handleImageClick = (index: number) => {
     const item = galleryItems[index]
-    if (item.type === "url" && item.externalUrl) {
+    if ((item.type === "external-link" || item.type === "video") && item.externalUrl) {
       window.open(item.externalUrl, "_blank")
     } else if (item.type === "image") {
       const imageIndex = imageItems.findIndex((imgItem) => imgItem.id === item.id)
@@ -122,6 +179,17 @@ export default function CinematographyPage() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [selectedImageIndex])
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen text-[#FFFFFF] flex items-center justify-center" style={{ background: "#000000" }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading gallery...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen text-[#FFFFFF]" style={{ background: "#000000" }}>
       <Navigation />
@@ -141,82 +209,97 @@ export default function CinematographyPage() {
           </p>
         </motion.div>
 
+        {/* Debug Info */}
+        <div className="max-w-7xl mx-auto px-6 mb-8">
+          <div className="bg-white/5 p-4 rounded-lg text-sm text-white/70">
+            <p>Gallery Items: {galleryItems.length} | Cinematography items loaded from localStorage</p>
+            {galleryItems.length > 0 && <p>Items: {galleryItems.map((item) => item.title).join(", ")}</p>}
+          </div>
+        </div>
+
         {/* Gallery Grid */}
         <div ref={ref} className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-fr gap-4 md:gap-6">
-            {galleryItems.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`group relative overflow-hidden rounded-lg ${item.layout.colSpan} ${item.layout.rowSpan}`}
-              >
-                {item.type === "image" ? (
-                  <div
-                    className={`relative ${item.layout.aspectRatio} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer`}
-                    onClick={() => handleImageClick(index)}
-                  >
-                    <Image
-                      src={item.src || "/placeholder.svg"}
-                      alt={item.description}
-                      fill
-                      className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-[#FFFFFF]/90 text-[#000000] px-4 py-2 rounded-full text-sm font-medium">
-                        Click to view
-                      </div>
-                    </div>
-                  </div>
-                ) : item.type === "video" ? (
-                  <div
-                    className={`relative ${item.layout.aspectRatio} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg`}
-                  >
-                    <video
-                      poster={item.thumbnail}
-                      controls
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                      preload="metadata"
+          {galleryItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-fr gap-4 md:gap-6">
+              {galleryItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className={`group relative overflow-hidden rounded-lg ${item.layout?.colSpan || "md:col-span-1"} ${item.layout?.rowSpan || "md:row-span-1"}`}
+                >
+                  {item.type === "image" ? (
+                    <div
+                      className={`relative ${item.layout?.aspectRatio || "aspect-video"} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer`}
+                      onClick={() => handleImageClick(index)}
                     >
-                      <source src={item.src} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700 pointer-events-none" />
-                  </div>
-                ) : (
-                  <div
-                    className={`relative ${item.layout.aspectRatio} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer`}
-                    onClick={() => handleImageClick(index)}
-                  >
-                    <Image
-                      src={item.thumbnail || "/placeholder.svg"}
-                      alt={item.description}
-                      fill
-                      className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-[#FFFFFF]/90 text-[#000000] px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                        <ExternalLink className="w-4 h-4" />
-                        Open Link
+                      <Image
+                        src={item.src || "/placeholder.svg"}
+                        alt={item.description}
+                        fill
+                        className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-[#FFFFFF]/90 text-[#000000] px-4 py-2 rounded-full text-sm font-medium">
+                          Click to view
+                        </div>
                       </div>
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <ExternalLink className="w-5 h-5 text-white/80" />
+                  ) : item.type === "video" ? (
+                    <div
+                      className={`relative ${item.layout?.aspectRatio || "aspect-video"} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg`}
+                    >
+                      <video
+                        poster={item.thumbnail}
+                        controls
+                        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                        preload="metadata"
+                      >
+                        <source src={item.src} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700 pointer-events-none" />
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div
+                      className={`relative ${item.layout?.aspectRatio || "aspect-video"} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg cursor-pointer`}
+                      onClick={() => handleImageClick(index)}
+                    >
+                      <Image
+                        src={item.thumbnail || "/placeholder.svg"}
+                        alt={item.description}
+                        fill
+                        className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-[#FFFFFF]/90 text-[#000000] px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                          <ExternalLink className="w-4 h-4" />
+                          Open Link
+                        </div>
+                      </div>
+                      <div className="absolute top-4 right-4">
+                        <ExternalLink className="w-5 h-5 text-white/80" />
+                      </div>
+                    </div>
+                  )}
 
-                {/* Item Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="text-white font-bold text-sm mb-1">{item.title}</h3>
-                  <p className="text-white/80 text-xs">{item.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  {/* Item Info Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <h3 className="text-white font-bold text-sm mb-1">{item.title}</h3>
+                    <p className="text-white/80 text-xs">{item.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-white/60">
+              <p className="text-lg mb-4">No cinematography items found.</p>
+              <p className="text-sm">Add some media items from the admin panel to see them here.</p>
+            </div>
+          )}
         </div>
 
         {/* Call to Action */}

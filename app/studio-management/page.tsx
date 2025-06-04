@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
 import {
   Plus,
   Edit,
@@ -42,7 +41,12 @@ interface MediaItem {
   category: "cinematography" | "video-editing" | "social-media"
   isExternal?: boolean
   externalUrl?: string
-  sourceType: "file" | "url" // New field to distinguish between file upload and URL
+  sourceType: "file" | "url"
+  layout: {
+    colSpan: string
+    rowSpan: string
+    aspectRatio: string
+  }
 }
 
 interface Project {
@@ -78,77 +82,104 @@ export default function AdminPanel() {
 
   // Load data from localStorage
   const loadData = () => {
-    const savedMedia = localStorage.getItem("psaStudiosMedia")
-    const savedProjects = localStorage.getItem("psaStudiosProjects")
+    try {
+      const savedMedia = localStorage.getItem("psaStudiosMedia")
+      const savedProjects = localStorage.getItem("psaStudiosProjects")
 
-    if (savedMedia) {
-      setMediaItems(JSON.parse(savedMedia))
-    } else {
-      // Default data with mixed media types
-      setMediaItems([
-        {
-          id: "1",
-          type: "image",
-          title: "Cinematic Portrait",
-          description: "Dramatic lighting cinematography",
-          src: "/images/cinematography-1.jpeg",
-          category: "cinematography",
-          sourceType: "file",
-        },
-        {
-          id: "2",
-          type: "video",
-          title: "Behind the Scenes",
-          description: "Video editing process showcase",
-          src: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-          thumbnail: "/images/video-thumb-1.jpeg",
-          category: "video-editing",
-          sourceType: "url",
-        },
-        {
-          id: "3",
-          type: "external-link",
-          title: "YouTube Showcase",
-          description: "Our latest video editing reel",
-          src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-          thumbnail: "/images/youtube-thumbnail.jpeg",
-          category: "social-media",
-          isExternal: true,
-          externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-          sourceType: "url",
-        },
-      ])
-    }
+      if (savedMedia) {
+        const parsedMedia = JSON.parse(savedMedia)
+        // Ensure all media items have layout property
+        const mediaWithLayout = parsedMedia.map((item: any) => ({
+          ...item,
+          layout: item.layout || {
+            colSpan: "md:col-span-1",
+            rowSpan: "md:row-span-1",
+            aspectRatio: item.type === "video" ? "aspect-video" : "aspect-square",
+          },
+        }))
+        setMediaItems(mediaWithLayout)
+      } else {
+        // Default data with mixed media types
+        setMediaItems([
+          {
+            id: "1",
+            type: "image",
+            title: "Cinematic Portrait",
+            description: "Dramatic lighting cinematography",
+            src: "/placeholder.svg?height=400&width=600",
+            category: "cinematography",
+            sourceType: "file",
+            layout: { colSpan: "md:col-span-2", rowSpan: "md:row-span-2", aspectRatio: "aspect-[16/10]" },
+          },
+          {
+            id: "2",
+            type: "video",
+            title: "Behind the Scenes",
+            description: "Video editing process showcase",
+            src: "/placeholder.svg?height=400&width=600",
+            thumbnail: "/placeholder.svg?height=400&width=600",
+            category: "video-editing",
+            sourceType: "url",
+            layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
+          },
+          {
+            id: "3",
+            type: "external-link",
+            title: "YouTube Showcase",
+            description: "Our latest video editing reel",
+            src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            thumbnail: "/placeholder.svg?height=400&width=600",
+            category: "social-media",
+            isExternal: true,
+            externalUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            sourceType: "url",
+            layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-video" },
+          },
+        ])
+      }
 
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects))
-    } else {
-      // Default projects
-      setProjects([
-        {
-          id: "1",
-          title: "Corporate Brand Film",
-          category: "Commercial",
-          description: "Professional corporate video production",
-          thumbnail: "/images/project-1.jpeg",
-          sourceType: "file",
-        },
-        {
-          id: "2",
-          title: "Music Video",
-          category: "Entertainment",
-          description: "Creative music video production",
-          thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500",
-          sourceType: "url",
-        },
-      ])
+      if (savedProjects) {
+        setProjects(JSON.parse(savedProjects))
+      } else {
+        // Default projects
+        setProjects([
+          {
+            id: "1",
+            title: "Corporate Brand Film",
+            category: "Commercial",
+            description: "Professional corporate video production",
+            thumbnail: "/placeholder.svg?height=400&width=600",
+            sourceType: "file",
+          },
+          {
+            id: "2",
+            title: "Music Video",
+            category: "Entertainment",
+            description: "Creative music video production",
+            thumbnail: "/placeholder.svg?height=400&width=600",
+            sourceType: "url",
+          },
+        ])
+      }
+    } catch (error) {
+      console.error("Error loading data:", error)
+      setMediaItems([])
+      setProjects([])
     }
   }
 
   // Save data to localStorage
   const saveData = () => {
-    localStorage.setItem("psaStudiosMedia", JSON.stringify(mediaItems))
-    localStorage.setItem("psaStudiosProjects", JSON.stringify(projects))
+    try {
+      localStorage.setItem("psaStudiosMedia", JSON.stringify(mediaItems))
+      localStorage.setItem("psaStudiosProjects", JSON.stringify(projects))
+      console.log("Data saved to localStorage:", { mediaItems, projects })
+
+      // Trigger custom event for same-tab updates
+      window.dispatchEvent(new CustomEvent("localStorageUpdate"))
+    } catch (error) {
+      console.error("Error saving data:", error)
+    }
   }
 
   useEffect(() => {
@@ -159,7 +190,13 @@ export default function AdminPanel() {
     const item: MediaItem = {
       ...newItem,
       id: Date.now().toString(),
+      layout: newItem.layout || {
+        colSpan: "md:col-span-1",
+        rowSpan: "md:row-span-1",
+        aspectRatio: newItem.type === "video" ? "aspect-video" : "aspect-square",
+      },
     }
+    console.log("Adding new media item:", item)
     setMediaItems([...mediaItems, item])
     setShowAddMedia(false)
   }
@@ -198,11 +235,7 @@ export default function AdminPanel() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 max-w-md w-full mx-4"
-        >
+        <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 max-w-md w-full mx-4">
           <h1 className="text-2xl font-bold text-white mb-6 text-center">PSA Studios Management</h1>
           <div className="space-y-4">
             <Input
@@ -217,7 +250,7 @@ export default function AdminPanel() {
               Access Studio Management
             </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
     )
   }
@@ -225,7 +258,7 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold">PSA Studios Management Panel</h1>
             <div className="flex gap-4">
@@ -264,6 +297,16 @@ export default function AdminPanel() {
                   <Plus className="w-4 h-4 mr-2" />
                   Add Media
                 </Button>
+              </div>
+
+              {/* Debug Info */}
+              <div className="bg-white/5 p-4 rounded-lg">
+                <p className="text-sm text-white/70">
+                  Total Media Items: {mediaItems.length} | Cinematography:{" "}
+                  {mediaItems.filter((item) => item.category === "cinematography").length} | Video Editing:{" "}
+                  {mediaItems.filter((item) => item.category === "video-editing").length} | Social Media:{" "}
+                  {mediaItems.filter((item) => item.category === "social-media").length}
+                </p>
               </div>
 
               {/* Uniform 3-column grid */}
@@ -362,7 +405,7 @@ export default function AdminPanel() {
               )}
             </TabsContent>
           </Tabs>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
@@ -628,9 +671,14 @@ function MediaItemForm({
     isExternal: item?.isExternal || false,
     externalUrl: item?.externalUrl || "",
     sourceType: item?.sourceType || ("file" as "file" | "url"),
+    layout: item?.layout || {
+      colSpan: "md:col-span-1",
+      rowSpan: "md:row-span-1",
+      aspectRatio: "aspect-square",
+    },
   })
 
-  const [uploadMethod, setUploadMethod] = useState<"file-upload" | "url">("file-upload")
+  const [uploadMethod, setUploadMethod] = useState<"file-upload" | "url" | "cloudinary">("file-upload")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -656,7 +704,14 @@ function MediaItemForm({
       ...formData,
       isExternal: formData.type === "external-link",
       externalUrl: formData.type === "external-link" ? formData.src : formData.externalUrl,
+      layout: {
+        colSpan: "md:col-span-1",
+        rowSpan: "md:row-span-1",
+        aspectRatio: formData.type === "video" ? "aspect-video" : "aspect-square",
+      },
     }
+
+    console.log("Submitting media item:", finalData)
 
     if (item) {
       onSubmit({ ...item, ...finalData })
@@ -759,7 +814,10 @@ function MediaItemForm({
         <h3 className="text-lg font-semibold border-b border-white/20 pb-2">Media Source</h3>
 
         <div className="bg-white/5 rounded-lg p-4">
-          <Tabs defaultValue="file-upload" onValueChange={(value) => setUploadMethod(value as "file-upload" | "url")}>
+          <Tabs
+            defaultValue="file-upload"
+            onValueChange={(value) => setUploadMethod(value as "file-upload" | "url" | "cloudinary")}
+          >
             <TabsList className="grid w-full grid-cols-3 bg-white/10">
               <TabsTrigger value="file-upload" className="data-[state=active]:bg-white data-[state=active]:text-black">
                 <Upload className="w-4 h-4 mr-2" />
