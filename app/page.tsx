@@ -179,10 +179,10 @@ export default function HomePage() {
                     }}
                   >
                     <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
                       CINEMATOGRAPHY
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-bold font-medium">
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
                       Professional Video Production
                     </p>
                   </motion.div>
@@ -210,10 +210,10 @@ export default function HomePage() {
                     }}
                   >
                     <Film className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
                       VIDEO EDITING
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-bold font-medium">
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
                       Post-Production Excellence
                     </p>
                   </motion.div>
@@ -241,10 +241,10 @@ export default function HomePage() {
                     }}
                   >
                     <Share2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-bold text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
                       SOCIAL MEDIA
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-bold font-medium">
+                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
                       Strategic Content Creation
                     </p>
                   </motion.div>
