@@ -63,7 +63,7 @@ export default function CinematographyPage() {
           type: "video",
           title: "Social Media Reel 1",
           description: "Engaging vertical content for social platforms",
-          src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8",
+          src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8?start_high_res=true",
           thumbnail:
             "https://cdn.gumlet.io/gumlet-video/68440cbd0f8d7a05184b35d8/thumbnail-1-0.jpeg?width=400&height=711",
           videoId: "68440cbd0f8d7a05184b35d8",
