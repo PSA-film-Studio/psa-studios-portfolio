@@ -28,7 +28,7 @@ export default function VideoEditingPage() {
     }
   }, [])
 
-  const editingStyles = [
+  const  = [
     {
       icon: Award,
       title: "Premium Quality",
@@ -130,7 +130,7 @@ export default function VideoEditingPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {editingStyles.map((style, index) => (
+            {.map((style, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -141,7 +141,7 @@ export default function VideoEditingPage() {
               >
                 <style.icon className="w-12 h-12 text-[#FFFFFF] mx-auto mb-6" />
                 <h3 className="text-lg font-bold text-[#FFFFFF] mb-3">{style.title}</h3>
-                <p className="text-sm text-[#C0C0C0] font-sans font-medium leading-relaxed">{style.description}</p>
+                <p className="text-sm text-[#F8F8F8] font-sans font-medium leading-relaxed">{style.description}</p>
               </motion.div>
             ))}
           </div>
