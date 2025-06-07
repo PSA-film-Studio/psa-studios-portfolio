@@ -112,7 +112,7 @@ export default function SocialMediaPage() {
             <h2 className="text-2xl md:text-3xl font-bold text-[#C0C0C0] mb-8 tracking-tight">
               Content Creation and Strategy
             </h2>
-            <p className="text-lg text-[#C0C0C0] max-w-4xl mx-auto leading-relaxed font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-4xl mx-auto leading-relaxed font-sans font-medium">
               We help brands build meaningful connections with their audience through strategic social media management,
               creative content creation, and data-driven growth strategies. From concept to execution, we handle every
               aspect of your social media presence to ensure maximum impact and engagement.
@@ -130,7 +130,7 @@ export default function SocialMediaPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Key Services</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
               Comprehensive social media solutions to grow your brand and engage your audience
             </p>
           </motion.div>
@@ -147,7 +147,7 @@ export default function SocialMediaPage() {
               >
                 <service.icon className="w-12 h-12 text-[#FFFFFF] mx-auto mb-6" />
                 <h3 className="text-lg font-bold text-[#FFFFFF] mb-3">{service.title}</h3>
-                <p className="text-sm text-[#C0C0C0] font-serif font-medium leading-relaxed">{service.description}</p>
+                <p className="text-sm text-[#F8F8F8] font-sans font-medium leading-relaxed">{service.description}</p>
               </motion.div>
             ))}
           </div>
@@ -163,7 +163,7 @@ export default function SocialMediaPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Campaign Highlights</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
               Success stories from our recent social media campaigns across various platforms
             </p>
           </motion.div>
@@ -187,7 +187,7 @@ export default function SocialMediaPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <div className="text-sm font-serif font-medium text-[#C0C0C0]">{highlight.platform}</div>
+                    <div className="text-sm font-sans font-medium text-[#C0C0C0]">{highlight.platform}</div>
                     <div className="text-lg font-bold">{highlight.metrics}</div>
                   </div>
                 </div>
@@ -225,11 +225,11 @@ export default function SocialMediaPage() {
                   height={60}
                   className="rounded-full mx-auto mb-6 border-2 border-[#C0C0C0]"
                 />
-                <blockquote className="text-lg text-[#C0C0C0] italic mb-6 font-serif font-medium">
+                <blockquote className="text-lg text-[#C0C0C0] italic mb-6 font-sans font-medium">
                   "{testimonials[currentTestimonial]?.description}"
                 </blockquote>
                 <div className="font-bold text-[#FFFFFF]">{testimonials[currentTestimonial]?.title}</div>
-                <div className="text-[#C0C0C0] text-sm font-serif">{testimonials[currentTestimonial]?.category}</div>
+                <div className="text-[#C0C0C0] text-sm font-sans">{testimonials[currentTestimonial]?.category}</div>
               </div>
 
               <div className="flex justify-center space-x-2">
@@ -252,7 +252,7 @@ export default function SocialMediaPage() {
               viewport={{ once: true }}
               className="retro-card p-12 text-center"
             >
-              <div className="text-[#C0C0C0] font-serif">
+              <div className="text-[#C0C0C0] font-sans">
                 <p className="text-lg mb-4">No testimonials available yet.</p>
                 <p className="text-sm">
                   Add client testimonials from the admin panel to showcase your success stories.
@@ -275,7 +275,7 @@ export default function SocialMediaPage() {
               <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-4">
                 Ready to Grow Your Social Presence?
               </h2>
-              <p className="text-lg text-[#C0C0C0] font-serif font-medium">
+              <p className="text-lg text-[#C0C0C0] font-sans font-medium">
                 Let's discuss your social media goals and create a strategy that delivers results
               </p>
             </div>
