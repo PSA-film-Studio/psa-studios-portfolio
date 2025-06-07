@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-montserrat: "Montserrat", sans-serif;
+  --font-montserrat: "Montserrat", roboto;
   --font-lora: "Lora", serif;
 }
 
