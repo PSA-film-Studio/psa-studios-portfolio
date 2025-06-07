@@ -63,7 +63,7 @@ export default function CinematographyPage() {
           type: "video",
           title: "Social Media Reel 1",
           description: "Engaging vertical content for social platforms",
-          src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8?start_high_res=true",
+          src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8",
           thumbnail:
             "https://cdn.gumlet.io/gumlet-video/68440cbd0f8d7a05184b35d8/thumbnail-1-0.jpeg?width=400&height=711",
           videoId: "68440cbd0f8d7a05184b35d8",
@@ -84,7 +84,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "social-media",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
-          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440f430f8d7a05184b46d7?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440f430f8d7a05184b46d7?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "sm3",
@@ -98,7 +98,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "social-media",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
-          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684413f52ea48d13d45afb20?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684413f52ea48d13d45afb20?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "sm4",
@@ -112,7 +112,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "social-media",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
-          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440df82ea48d13d45ad190?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440df82ea48d13d45ad190?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
       ])
 
@@ -150,7 +150,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "films",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
-          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417cd2ea48d13d45b15b9?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417cd2ea48d13d45b15b9?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "f4",
@@ -184,7 +184,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "films",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
-          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417aaed94500acc42e9c3?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417aaed94500acc42e9c3?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "f7",
@@ -218,7 +218,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "films",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
-          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68441be42ea48d13d45b487b?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68441be42ea48d13d45b487b?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "f10",
