@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Montserrat, Lora } from "next/font/google"
+import { Montserrat, Helvetica } from "next/font/google"
 import "./globals.css"
 import AdminLink from "@/components/admin-link"
 
@@ -10,10 +10,10 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 })
 
-const lora = Lora({
+const helvetica = Helvetica({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-lora",
+  variable: "--font-helvetica",
 })
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${lora.variable} font-sans relative`}
+        className={`${montserrat.variable} ${helvetica.variable} font-sans relative`}
         style={{ backgroundColor: "#000000" }}
       >
         <div className="noise-overlay"></div>
