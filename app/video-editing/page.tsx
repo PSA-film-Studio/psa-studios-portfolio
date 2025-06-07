@@ -70,6 +70,7 @@ export default function VideoEditingPage() {
   return (
     <div className="min-h-screen text-[#FFFFFF]" style={{ background: "#000000" }}>
       <Navigation />
+      </div>
 
       <main className="pt-24 pb-16">
         {/* Hero Section */}
