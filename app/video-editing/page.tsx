@@ -28,7 +28,7 @@ export default function VideoEditingPage() {
     }
   }, [])
 
-  const[
+  const editingStyles = [
     {
       icon: Award,
       title: "Premium Quality",
