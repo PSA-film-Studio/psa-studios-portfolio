@@ -87,7 +87,7 @@ export default function VideoEditingPage() {
               <br />
               stunning visuals
             </h1>
-            <p className="text-lg text-[#C0C0C0] max-w-3xl mx-auto font-serif font-medium leading-relaxed">
+            <p className="text-lg text-[#C0C0C0] max-w-3xl mx-auto font-sans font-medium leading-relaxed">
               Transform raw footage into compelling narratives with our expert video editing services. We combine
               technical precision with creative vision to deliver exceptional results.
             </p>
@@ -124,7 +124,7 @@ export default function VideoEditingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Our Editing Expertise</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
               We specialize in various editing techniques to bring out the best in your content
             </p>
           </motion.div>
@@ -141,7 +141,7 @@ export default function VideoEditingPage() {
               >
                 <style.icon className="w-12 h-12 text-[#FFFFFF] mx-auto mb-6" />
                 <h3 className="text-lg font-bold text-[#FFFFFF] mb-3">{style.title}</h3>
-                <p className="text-sm text-[#C0C0C0] font-serif font-medium leading-relaxed">{style.description}</p>
+                <p className="text-sm text-[#C0C0C0] font-sans font-medium leading-relaxed">{style.description}</p>
               </motion.div>
             ))}
           </div>
@@ -157,7 +157,7 @@ export default function VideoEditingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Featured Projects</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
               Explore our portfolio of successful video editing projects across various industries
             </p>
           </motion.div>
@@ -228,7 +228,7 @@ export default function VideoEditingPage() {
             className="retro-card p-12"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Ready to elevate your content?</h2>
-            <p className="text-lg text-[#C0C0C0] mb-8 max-w-2xl mx-auto font-serif font-medium">
+            <p className="text-lg text-[#C0C0C0] mb-8 max-w-2xl mx-auto font-sans font-medium">
               Let's discuss your project and create something extraordinary together. Get a custom quote tailored to
               your specific needs and timeline.
             </p>
