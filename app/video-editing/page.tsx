@@ -20,7 +20,6 @@ interface Project {
 export default function VideoEditingPage() {
   const [projects, setProjects] = useState<Project[]>([])
 
-  // Load projects from localStorage or use defaults
   useEffect(() => {
     const savedProjects = localStorage.getItem("psaStudiosProjects")
     if (savedProjects) {
@@ -70,7 +69,7 @@ export default function VideoEditingPage() {
   return (
     <div className="min-h-screen text-[#FFFFFF]" style={{ background: "#000000" }}>
       <Navigation />
-      
+
       <main className="pt-24 pb-16">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 mb-24">
@@ -130,7 +129,7 @@ export default function VideoEditingPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {.map((style, index) => (
+            {editingStyles.map((style, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -163,7 +162,7 @@ export default function VideoEditingPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {editingStyles.map((style, index) => (
+            {projects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 30 }}
