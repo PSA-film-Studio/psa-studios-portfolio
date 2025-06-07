@@ -12,7 +12,7 @@ const montserrat = Montserrat({
 
 const roboto = Roboto({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "700", "900"],
   variable: "--font-roboto",
 })
 
