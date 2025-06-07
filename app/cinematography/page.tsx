@@ -65,7 +65,7 @@ export default function CinematographyPage() {
           description: "Engaging vertical content for social platforms",
           src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/68440cbd0f8d7a05184b35d8/thumbnail-1-0.jpeg?width=400&height=711",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68441be42ea48d13d45b487b/thumbnail-1-0.png?v=1749294282512",
           videoId: "68440cbd0f8d7a05184b35d8",
           category: "cinematography",
           section: "social-media",
