@@ -96,7 +96,7 @@ export default function HomePage() {
             <motion.div
               initial={{ width: 0 }}
               animate={{
-                width: animationPhase >= 2 ? "600px" : 0,
+                width: animationPhase >= 2 ? "720px" : 0,
               }}
               transition={{
                 width: { duration: 0.7, delay: 1.0, ease: "easeInOut" },

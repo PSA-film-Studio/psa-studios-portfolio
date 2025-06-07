@@ -1,11 +1,13 @@
 "use client"
 
+import type React from "react"
+
 import { motion } from "framer-motion"
 import Navigation from "@/components/navigation"
 import Image from "next/image"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
-import { X, ChevronLeft, ChevronRight, ExternalLink, Play } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, Play, Film, Instagram } from "lucide-react"
 import { sendToWhatsApp } from "@/lib/whatsapp"
 
 interface MediaItem {
@@ -16,6 +18,7 @@ interface MediaItem {
   src: string
   thumbnail?: string
   category: "cinematography" | "video-editing" | "social-media"
+  section?: "social-media" | "films"
   layout: {
     colSpan: string
     rowSpan: string
@@ -23,13 +26,21 @@ interface MediaItem {
   }
   isExternal?: boolean
   externalUrl?: string
+  embedCode?: string
+  videoId?: string
 }
 
 export default function CinematographyPage() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const socialMediaRef = useRef(null)
+  const filmsRef = useRef(null)
+  const isSocialMediaInView = useInView(socialMediaRef, { once: true, margin: "-100px" })
+  const isFilmsInView = useInView(filmsRef, { once: true, margin: "-100px" })
+
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
-  const [galleryItems, setGalleryItems] = useState<MediaItem[]>([])
+  const [selectedSection, setSelectedSection] = useState<"social-media" | "films" | null>(null)
+  const [socialMediaItems, setSocialMediaItems] = useState<MediaItem[]>([])
+  const [filmsItems, setFilmsItems] = useState<MediaItem[]>([])
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null)
 
   // Load gallery items from localStorage or use defaults
   useEffect(() => {
@@ -37,134 +48,224 @@ export default function CinematographyPage() {
     if (savedMedia) {
       const allMedia = JSON.parse(savedMedia)
       const cinematographyItems = allMedia.filter((item: MediaItem) => item.category === "cinematography")
-      setGalleryItems(cinematographyItems)
+
+      // Split items by section
+      const socialMedia = cinematographyItems.filter((item) => item.section === "social-media")
+      const films = cinematographyItems.filter((item) => item.section === "films")
+
+      setSocialMediaItems(socialMedia)
+      setFilmsItems(films)
     } else {
-      // Default items with your uploaded images
-      setGalleryItems([
+      // Default social media items (videos with working Gumlet thumbnails)
+      setSocialMediaItems([
         {
-          id: "1",
-          type: "image",
-          title: "Contemplative Moment",
-          description: "Dramatic interior lighting with warm tones",
-          src: "/images/cinematography/8_1.3.2-min.png",
+          id: "sm1",
+          type: "video",
+          title: "Social Media Reel 1",
+          description: "Engaging vertical content for social platforms",
+          src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/68440cbd0f8d7a05184b35d8/thumbnail-1-0.jpeg?width=400&height=711",
+          videoId: "68440cbd0f8d7a05184b35d8",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "social-media",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
-          id: "2",
-          type: "image",
-          title: "Natural Portrait",
-          description: "Atmospheric lighting and composition",
-          src: "/images/cinematography/1_1.4.1-min.jpeg",
+          id: "sm2",
+          type: "video",
+          title: "Social Media Reel 2",
+          description: "Dynamic storytelling in vertical format",
+          src: "https://play.gumlet.io/embed/68440f430f8d7a05184b46d7",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/68440f430f8d7a05184b46d7/thumbnail-1-0.jpeg?width=400&height=711",
+          videoId: "68440f430f8d7a05184b46d7",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "social-media",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440f430f8d7a05184b46d7?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
-          id: "3",
-          type: "image",
-          title: "Upward Gaze",
-          description: "Beautiful warm lighting and shadows",
-          src: "/images/cinematography/1_1.3.1-min.png",
+          id: "sm3",
+          type: "video",
+          title: "Social Media Reel 3",
+          description: "Creative visual content optimized for mobile",
+          src: "https://play.gumlet.io/embed/684413f52ea48d13d45afb20",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/684413f52ea48d13d45afb20/thumbnail-1-0.jpeg?width=400&height=711",
+          videoId: "684413f52ea48d13d45afb20",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "social-media",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684413f52ea48d13d45afb20?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
-          id: "4",
-          type: "image",
-          title: "Urban Landscape",
-          description: "Two subjects against industrial backdrop",
-          src: "/images/cinematography/10_1.10.1-min.png",
+          id: "sm4",
+          type: "video",
+          title: "Social Media Reel 4",
+          description: "Captivating short-form video content",
+          src: "https://play.gumlet.io/embed/68440df82ea48d13d45ad190",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/68440df82ea48d13d45ad190/thumbnail-1-0.jpeg?width=400&height=711",
+          videoId: "68440df82ea48d13d45ad190",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "social-media",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440df82ea48d13d45ad190?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+        },
+      ])
+
+      // Default films items (mix of images and videos with working Gumlet thumbnails)
+      setFilmsItems([
+        {
+          id: "f1",
+          type: "image",
+          title: "Cinematic Landscape",
+          description: "Atmospheric composition with natural elements",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/First.png-OHRiW1SKMrcWdG2mVHCNjlezhHjOJp.jpeg",
+          category: "cinematography",
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
         },
         {
-          id: "5",
+          id: "f2",
           type: "image",
-          title: "Gentle Touch",
-          description: "Artistic close-up with soft natural lighting",
-          src: "/images/cinematography/9_1.2.4-min.png",
+          title: "Artistic Portrait",
+          description: "Ground-level perspective with dramatic composition",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Second.png-9KtsEfuzla5vsUXwAEfRQ4lmXXSxin.jpeg",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
         },
         {
-          id: "6",
-          type: "image",
-          title: "Solitary Journey",
-          description: "Cinematic landscape with silhouetted figure",
-          src: "/images/cinematography/Untitled_1.2.2.T.jpeg",
+          id: "f3",
+          type: "video",
+          title: "Film Project 1",
+          description: "Professional cinematic storytelling",
+          src: "https://play.gumlet.io/embed/684417cd2ea48d13d45b15b9",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/684417cd2ea48d13d45b15b9/thumbnail-1-0.jpeg?width=800&height=450",
+          videoId: "684417cd2ea48d13d45b15b9",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417cd2ea48d13d45b15b9?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
-          id: "7",
+          id: "f4",
           type: "image",
-          title: "Musical Moment",
-          description: "Dramatic piano scene with atmospheric lighting",
-          src: "/images/cinematography/4_1.1.2.jpeg",
+          title: "Piano Intimacy",
+          description: "Intimate musical moment with atmospheric lighting",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Third.png-1C7kKi6bKPKKgsolQNXoMQ0FkKK0wh.jpeg",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
         },
         {
-          id: "8",
+          id: "f5",
           type: "image",
-          title: "Peaceful Rest",
-          description: "Natural outdoor portrait with artistic composition",
-          src: "/images/cinematography/8_1.1.5-min.jpeg",
+          title: "Contemplative Mood",
+          description: "Moody portrait with warm lighting and shadows",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fourth.png-atNgazlc8N7I8pLRlD2IeDGteibZPa.jpeg",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
         },
         {
-          id: "9",
-          type: "image",
-          title: "Shadow Play",
-          description: "Moody interior with dramatic shadows",
-          src: "/images/cinematography/6_1.5.2-min.jpeg",
+          id: "f6",
+          type: "video",
+          title: "Film Project 2",
+          description: "Cinematic narrative with professional production value",
+          src: "https://play.gumlet.io/embed/684417aaed94500acc42e9c3",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/684417aaed94500acc42e9c3/thumbnail-1-0.jpeg?width=800&height=450",
+          videoId: "684417aaed94500acc42e9c3",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/684417aaed94500acc42e9c3?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
-          id: "10",
+          id: "f7",
           type: "image",
-          title: "Intimate Performance",
-          description: "Warm, intimate piano scene with natural lighting",
-          src: "/images/cinematography/3_1.12.1-min.jpeg",
+          title: "Dramatic Expression",
+          description: "Intense character portrait with cinematic lighting",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fifth.png-djsEoejfuGzfGaGpyPzXMNEZFGF9oX.jpeg",
           category: "cinematography",
-          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[4/3]" },
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+        },
+        {
+          id: "f8",
+          type: "image",
+          title: "Behind the Scenes",
+          description: "Professional film production in classroom setting",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Bts%201.jpg-mo3qL3Dh1BKTPSXLk1jDp9xkGgZ1Ur.jpeg",
+          category: "cinematography",
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+        },
+        {
+          id: "f9",
+          type: "video",
+          title: "Film Project 3",
+          description: "Professional filmmaking with advanced cinematography",
+          src: "https://play.gumlet.io/embed/68441be42ea48d13d45b487b",
+          thumbnail:
+            "https://cdn.gumlet.io/gumlet-video/68441be42ea48d13d45b487b/thumbnail-1-0.jpeg?width=800&height=450",
+          videoId: "68441be42ea48d13d45b487b",
+          category: "cinematography",
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68441be42ea48d13d45b487b?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+        },
+        {
+          id: "f10",
+          type: "image",
+          title: "Studio Setup",
+          description: "Behind-the-scenes professional lighting setup",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BTS%202.jpg-5aivZGVSYE2L77BXCg0wHAO5AhGrTN.jpeg",
+          category: "cinematography",
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
+        },
+        {
+          id: "f11",
+          type: "image",
+          title: "Natural Beauty",
+          description: "Serene landscape with cinematic composition",
+          src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sixth.jpg-40UCp0B2GGlWWdbHmzqZX0uhtcGIYX.jpeg",
+          category: "cinematography",
+          section: "films",
+          layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
         },
       ])
     }
   }, [])
 
-  // Filter only images for lightbox navigation
-  const imageItems = galleryItems.filter((item) => item.type === "image")
-
-  const handleItemClick = (index: number) => {
-    const item = galleryItems[index]
-    if (item.type === "url" && item.externalUrl) {
-      window.open(item.externalUrl, "_blank")
-    } else if (item.type === "video") {
-      if (item.src.startsWith("http")) {
-        window.open(item.src, "_blank")
-      }
-    } else if (item.type === "image") {
-      const imageIndex = imageItems.findIndex((imgItem) => imgItem.id === item.id)
-      setSelectedImageIndex(imageIndex)
-    }
+  const handleItemClick = (index: number, section: "social-media" | "films") => {
+    console.log("Item clicked:", index, section) // Debug log
+    setSelectedImageIndex(index)
+    setSelectedSection(section)
   }
 
   const closeLightbox = () => {
     setSelectedImageIndex(null)
+    setSelectedSection(null)
   }
 
   const goToPrevious = () => {
-    if (selectedImageIndex !== null) {
-      setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : imageItems.length - 1)
+    if (selectedImageIndex !== null && selectedSection) {
+      const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+      setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : sectionItems.length - 1)
     }
   }
 
   const goToNext = () => {
-    if (selectedImageIndex !== null) {
-      setSelectedImageIndex(selectedImageIndex < imageItems.length - 1 ? selectedImageIndex + 1 : 0)
+    if (selectedImageIndex !== null && selectedSection) {
+      const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+      setSelectedImageIndex(selectedImageIndex < sectionItems.length - 1 ? selectedImageIndex + 1 : 0)
     }
   }
 
@@ -184,17 +285,135 @@ export default function CinematographyPage() {
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [selectedImageIndex])
+  }, [selectedImageIndex, selectedSection])
 
-  const getMediaIcon = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Play className="w-4 h-4 sm:w-6 sm:h-6" />
-      case "url":
-        return <ExternalLink className="w-4 h-4 sm:w-6 sm:h-6" />
-      default:
-        return null
-    }
+  const handleSocialMediaVideoClick = (videoId: string) => {
+    setPlayingVideoId(playingVideoId === videoId ? null : videoId)
+  }
+
+  // Render gallery grid for a specific section
+  const renderGalleryGrid = (
+    items: MediaItem[],
+    section: "social-media" | "films",
+    ref: React.RefObject<HTMLDivElement>,
+    isInView: boolean,
+  ) => {
+    return (
+      <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {items.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="group relative overflow-hidden rounded-lg cursor-pointer"
+              onClick={() => {
+                if (section === "social-media" && item.type === "video") {
+                  handleSocialMediaVideoClick(item.videoId || item.id)
+                } else {
+                  handleItemClick(index, section)
+                }
+              }}
+            >
+              <div
+                className={`relative ${item.layout.aspectRatio} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg`}
+              >
+                {/* Media Content */}
+                {item.type === "video" ? (
+                  <div className="w-full h-full relative">
+                    {section === "social-media" && playingVideoId === (item.videoId || item.id) ? (
+                      // Show video player for social media when playing
+                      <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: item.embedCode || "" }} />
+                    ) : (
+                      // Show thumbnail when not playing
+                      <>
+                        <Image
+                          src={item.thumbnail || "/placeholder.svg?height=400&width=400"}
+                          alt={item.description}
+                          fill
+                          className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          onError={(e) => {
+                            console.log("Thumbnail failed to load:", item.thumbnail)
+                            const target = e.target as HTMLImageElement
+                            target.src = "/placeholder.svg?height=400&width=400"
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <div className="bg-white/90 rounded-full p-3 group-hover:bg-white group-hover:scale-110 transition-all duration-300">
+                            <Play className="w-6 h-6 text-black ml-1" />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <Image
+                    src={item.src || "/placeholder.svg?height=400&width=400"}
+                    alt={item.description}
+                    fill
+                    className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                )}
+
+                {/* Hover Overlay - only show when not playing video */}
+                {!(
+                  section === "social-media" &&
+                  item.type === "video" &&
+                  playingVideoId === (item.videoId || item.id)
+                ) && (
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
+                )}
+
+                {/* Media Type Badge - only show when not playing video */}
+                {!(
+                  section === "social-media" &&
+                  item.type === "video" &&
+                  playingVideoId === (item.videoId || item.id)
+                ) && (
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
+                    <div className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium capitalize">
+                      {item.type === "url" ? "External" : item.type}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Item Info Overlay - only show when not playing video */}
+              {!(
+                section === "social-media" &&
+                item.type === "video" &&
+                playingVideoId === (item.videoId || item.id)
+              ) && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="text-white font-bold text-xs sm:text-sm mb-1 line-clamp-1">{item.title}</h3>
+                  <p className="text-white/80 text-xs line-clamp-2">{item.description}</p>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {items.length === 0 && (
+          <div className="text-center py-12 sm:py-16">
+            <div className="text-[#C0C0C0]/60 mb-4">
+              {section === "social-media" ? (
+                <Instagram className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4" />
+              ) : (
+                <Film className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4" />
+              )}
+              <p className="text-base sm:text-lg">
+                No {section === "social-media" ? "social media" : "film"} content yet.
+              </p>
+              <p className="text-sm">Add some content through the studio management panel.</p>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -218,108 +437,47 @@ export default function CinematographyPage() {
           </p>
         </motion.div>
 
-        {/* Gallery Grid - Mobile optimized */}
-        <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {galleryItems.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative overflow-hidden rounded-lg cursor-pointer"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg">
-                  {/* Media Content */}
-                  {item.type === "image" ? (
-                    <Image
-                      src={item.src || "/placeholder.svg"}
-                      alt={item.description}
-                      fill
-                      className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                      onClick={() => handleItemClick(index)}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : item.type === "video" ? (
-                    <>
-                      <Image
-                        src={item.thumbnail || "/placeholder.svg"}
-                        alt={item.description}
-                        fill
-                        className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                        onClick={() => handleItemClick(index)}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      {/* Video Play Icon Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="bg-black/70 rounded-full p-3 sm:p-4 group-hover:bg-black/80 transition-colors duration-300">
-                          <Play className="w-6 h-6 sm:w-8 sm:h-8 text-white fill-white" />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <Image
-                        src={item.thumbnail || "/placeholder.svg"}
-                        alt={item.description}
-                        fill
-                        className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                        onClick={() => handleItemClick(index)}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      {/* External Link Icon */}
-                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
-                        <div className="bg-black/70 rounded-full p-1.5 sm:p-2">
-                          <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />
-
-                  {/* Hover Action Button */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-[#FFFFFF]/90 text-[#000000] px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-2">
-                      {getMediaIcon(item.type)}
-                      <span className="hidden sm:inline">
-                        {item.type === "image" ? "View Image" : item.type === "video" ? "Play Video" : "Open Link"}
-                      </span>
-                      <span className="sm:hidden">
-                        {item.type === "image" ? "View" : item.type === "video" ? "Play" : "Open"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Media Type Badge */}
-                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
-                    <div className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium capitalize">
-                      {item.type === "url" ? "External" : item.type}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Item Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="text-white font-bold text-xs sm:text-sm mb-1 line-clamp-1">{item.title}</h3>
-                  <p className="text-white/80 text-xs line-clamp-2">{item.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Empty State */}
-          {galleryItems.length === 0 && (
-            <div className="text-center py-12 sm:py-16">
-              <div className="text-[#C0C0C0]/60 mb-4">
-                <ExternalLink className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4" />
-                <p className="text-base sm:text-lg">No cinematography items yet.</p>
-                <p className="text-sm">Add some content through the studio management panel.</p>
-              </div>
+        {/* Social Media Section */}
+        <section className="mb-16 sm:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-10 px-4 sm:px-6"
+          >
+            <div className="inline-flex items-center justify-center gap-2 mb-3">
+              <Instagram className="w-5 h-5 sm:w-6 sm:h-6 text-[#C0C0C0]" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FFFFFF]">Social Media</h2>
             </div>
-          )}
-        </div>
+            <p className="text-sm sm:text-base text-[#C0C0C0] max-w-2xl mx-auto">
+              Short-form content optimized for social platforms. Engaging visuals that capture attention in seconds.
+            </p>
+          </motion.div>
+
+          {renderGalleryGrid(socialMediaItems, "social-media", socialMediaRef, isSocialMediaInView)}
+        </section>
+
+        {/* Films Section */}
+        <section>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-10 px-4 sm:px-6"
+          >
+            <div className="inline-flex items-center justify-center gap-2 mb-3">
+              <Film className="w-5 h-5 sm:w-6 sm:h-6 text-[#C0C0C0]" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FFFFFF]">Films</h2>
+            </div>
+            <p className="text-sm sm:text-base text-[#C0C0C0] max-w-2xl mx-auto">
+              Cinematic storytelling with depth and emotion. Professional films that leave a lasting impression.
+            </p>
+          </motion.div>
+
+          {renderGalleryGrid(filmsItems, "films", filmsRef, isFilmsInView)}
+        </section>
 
         {/* Call to Action */}
         <motion.div
@@ -348,68 +506,132 @@ export default function CinematographyPage() {
         </motion.div>
       </main>
 
-      {/* Lightbox Modal with Navigation - Mobile optimized */}
-      {selectedImageIndex !== null && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2 sm:p-4"
-          onClick={closeLightbox}
-        >
+      {/* Lightbox Modal with Navigation - exclude social media videos */}
+      {selectedImageIndex !== null &&
+        selectedSection &&
+        !(
+          selectedSection === "social-media" &&
+          (() => {
+            const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+            const item = sectionItems[selectedImageIndex]
+            return item?.type === "video"
+          })()
+        ) && (
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="relative max-w-4xl max-h-[90vh] w-full h-full"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-2 sm:p-4"
+            onClick={closeLightbox}
           >
-            <Image
-              src={imageItems[selectedImageIndex]?.src || "/placeholder.svg"}
-              alt={imageItems[selectedImageIndex]?.description || "Cinematography image"}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
-
-            {/* Close Button */}
-            <button
-              onClick={closeLightbox}
-              className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 rounded-full transition-colors duration-200 z-10"
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X size={20} className="sm:w-6 sm:h-6" />
-            </button>
+              {(() => {
+                const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+                const item = sectionItems[selectedImageIndex]
 
-            {/* Previous Button */}
-            {imageItems.length > 1 && (
+                if (item?.type === "image") {
+                  return (
+                    <div className="relative w-full h-full max-w-6xl max-h-[90vh]">
+                      <Image
+                        src={item.src || "/placeholder.svg"}
+                        alt={item.description || "Media"}
+                        fill
+                        className="object-contain"
+                        sizes="100vw"
+                      />
+                    </div>
+                  )
+                } else if (item?.type === "video") {
+                  // Calculate container size based on section
+                  const isVertical = selectedSection === "social-media"
+                  const containerStyle = isVertical
+                    ? {
+                        width: "min(90vw, 400px)",
+                        height: "min(90vh, 711px)", // 400 * 16/9 = 711
+                        aspectRatio: "9/16",
+                      }
+                    : {
+                        width: "min(90vw, 800px)",
+                        height: "min(90vh, 450px)", // 800 * 9/16 = 450
+                        aspectRatio: "16/9",
+                      }
+
+                  return (
+                    <div className="relative bg-black rounded-lg overflow-hidden" style={containerStyle}>
+                      <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: item.embedCode || "" }} />
+                    </div>
+                  )
+                }
+                return null
+              })()}
+
+              {/* Close Button */}
               <button
-                onClick={goToPrevious}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 sm:p-3 rounded-full transition-colors duration-200 z-10"
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200 z-20"
               >
-                <ChevronLeft size={20} className="sm:w-7 sm:h-7" />
+                <X size={24} />
               </button>
-            )}
 
-            {/* Next Button */}
-            {imageItems.length > 1 && (
-              <button
-                onClick={goToNext}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-[#FFFFFF]/20 hover:bg-[#FFFFFF]/30 text-[#FFFFFF] p-2 sm:p-3 rounded-full transition-colors duration-200 z-10"
-              >
-                <ChevronRight size={20} className="sm:w-7 sm:h-7" />
-              </button>
-            )}
+              {/* Navigation Buttons */}
+              {(() => {
+                const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+                return (
+                  sectionItems.length > 1 && (
+                    <>
+                      <button
+                        onClick={goToPrevious}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200 z-20"
+                      >
+                        <ChevronLeft size={24} />
+                      </button>
+                      <button
+                        onClick={goToNext}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200 z-20"
+                      >
+                        <ChevronRight size={24} />
+                      </button>
+                    </>
+                  )
+                )
+              })()}
 
-            {/* Image Counter */}
-            {imageItems.length > 1 && (
-              <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 bg-[#FFFFFF]/20 text-[#FFFFFF] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm">
-                {selectedImageIndex + 1} of {imageItems.length}
+              {/* Counter */}
+              {(() => {
+                const sectionItems = selectedSection === "social-media" ? socialMediaItems : filmsItems
+                return (
+                  sectionItems.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/20 text-white px-4 py-2 rounded-full text-sm">
+                      {selectedImageIndex + 1} of {sectionItems.length}
+                    </div>
+                  )
+                )
+              })()}
+
+              {/* Section Badge */}
+              <div className="absolute top-4 left-4 bg-white/20 text-white px-3 py-2 rounded-full text-sm flex items-center gap-2">
+                {selectedSection === "social-media" ? (
+                  <>
+                    <Instagram size={16} />
+                    <span>Social Media</span>
+                  </>
+                ) : (
+                  <>
+                    <Film size={16} />
+                    <span>Films</span>
+                  </>
+                )}
               </div>
-            )}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
     </div>
   )
 }
