@@ -145,7 +145,7 @@ export default function CinematographyPage() {
           description: "Professional cinematic storytelling",
           src: "https://play.gumlet.io/embed/684417cd2ea48d13d45b15b9",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/684417cd2ea48d13d45b15b9/thumbnail-1-0.jpeg?width=800&height=450",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/684417cd2ea48d13d45b15b9/thumbnail-1-0.png?v=1749293219611?width=800&height=450",
           videoId: "684417cd2ea48d13d45b15b9",
           category: "cinematography",
           section: "films",
