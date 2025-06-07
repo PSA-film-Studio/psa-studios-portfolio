@@ -61,11 +61,11 @@ export default function CinematographyPage() {
         {
           id: "sm1",
           type: "video",
-          title: "Social Media Reel 1",
+          title: "Beardo AD",
           description: "Engaging vertical content for social platforms",
           src: "https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8",
           thumbnail:
-            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68441be42ea48d13d45b487b/thumbnail-1-0.png?v=1749294282512",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68440cbd0f8d7a05184b35d8/thumbnail-1-0.png?v=1749291639000?v=1749294282512",
           videoId: "68440cbd0f8d7a05184b35d8",
           category: "cinematography",
           section: "social-media",
@@ -75,11 +75,11 @@ export default function CinematographyPage() {
         {
           id: "sm2",
           type: "video",
-          title: "Social Media Reel 2",
+          title: "Content Sample",
           description: "Dynamic storytelling in vertical format",
           src: "https://play.gumlet.io/embed/68440f430f8d7a05184b46d7",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/68440f430f8d7a05184b46d7/thumbnail-1-0.jpeg?width=400&height=711",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68440f430f8d7a05184b46d7/thumbnail-1-0.png?v=1749291071734?width=400&height=711",
           videoId: "68440f430f8d7a05184b46d7",
           category: "cinematography",
           section: "social-media",
@@ -89,11 +89,11 @@ export default function CinematographyPage() {
         {
           id: "sm3",
           type: "video",
-          title: "Social Media Reel 3",
+          title: "Promotional reel",
           description: "Creative visual content optimized for mobile",
           src: "https://play.gumlet.io/embed/684413f52ea48d13d45afb20",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/684413f52ea48d13d45afb20/thumbnail-1-0.jpeg?width=400&height=711",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/684413f52ea48d13d45afb20/thumbnail-1-0.png?v=1749292740497?width=400&height=711",
           videoId: "684413f52ea48d13d45afb20",
           category: "cinematography",
           section: "social-media",
@@ -103,11 +103,11 @@ export default function CinematographyPage() {
         {
           id: "sm4",
           type: "video",
-          title: "Social Media Reel 4",
+          title: "Informative Videos",
           description: "Captivating short-form video content",
           src: "https://play.gumlet.io/embed/68440df82ea48d13d45ad190",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/68440df82ea48d13d45ad190/thumbnail-1-0.jpeg?width=400&height=711",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68440df82ea48d13d45ad190/thumbnail-1-0.png?v=1749290722584?width=400&height=711",
           videoId: "68440df82ea48d13d45ad190",
           category: "cinematography",
           section: "social-media",
@@ -179,7 +179,7 @@ export default function CinematographyPage() {
           description: "Cinematic narrative with professional production value",
           src: "https://play.gumlet.io/embed/684417aaed94500acc42e9c3",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/684417aaed94500acc42e9c3/thumbnail-1-0.jpeg?width=800&height=450",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/684417aaed94500acc42e9c3/thumbnail-1-0.png?v=1749293213561?width=800&height=450",
           videoId: "684417aaed94500acc42e9c3",
           category: "cinematography",
           section: "films",
@@ -213,7 +213,7 @@ export default function CinematographyPage() {
           description: "Professional filmmaking with advanced cinematography",
           src: "https://play.gumlet.io/embed/68441be42ea48d13d45b487b",
           thumbnail:
-            "https://cdn.gumlet.io/gumlet-video/68441be42ea48d13d45b487b/thumbnail-1-0.jpeg?width=800&height=450",
+            "https://video.gumlet.io/68440ba3ed94500acc4296bd/68441be42ea48d13d45b487b/thumbnail-1-0.png?v=1749294282512?width=800&height=450",
           videoId: "68441be42ea48d13d45b487b",
           category: "cinematography",
           section: "films",
