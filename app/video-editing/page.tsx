@@ -28,7 +28,7 @@ export default function VideoEditingPage() {
     }
   }, [])
 
-  const  = 
+  const  = [
     {
       icon: Award,
       title: "Premium Quality",
