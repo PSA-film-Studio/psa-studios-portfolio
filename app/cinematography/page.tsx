@@ -70,7 +70,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "social-media",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[9/16]" },
-          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8?autoplay=true&muted=0&controls=1" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:9/16;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68440cbd0f8d7a05184b35d8?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
         {
           id: "sm2",
@@ -300,14 +300,16 @@ export default function CinematographyPage() {
   ) => {
     return (
       <div ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {items.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative overflow-hidden rounded-lg cursor-pointer"
+              className={`group relative overflow-hidden rounded-lg cursor-pointer ${
+                section === "social-media" ? "flex justify-center" : ""
+              }`}
               onClick={() => {
                 if (section === "social-media" && item.type === "video") {
                   handleSocialMediaVideoClick(item.videoId || item.id)
@@ -317,7 +319,9 @@ export default function CinematographyPage() {
               }}
             >
               <div
-                className={`relative ${item.layout.aspectRatio} overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg`}
+                className={`relative ${
+                  section === "social-media" ? "aspect-[9/16] w-full max-w-[300px] mx-auto" : item.layout.aspectRatio
+                } overflow-hidden bg-[#C0C0C0]/10 border border-[#C0C0C0]/30 shadow-lg`}
               >
                 {/* Media Content */}
                 {item.type === "video" ? (

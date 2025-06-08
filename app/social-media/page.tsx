@@ -3,12 +3,13 @@
 import { motion } from "framer-motion"
 import Navigation from "@/components/navigation"
 import Image from "next/image"
-import { Calendar, BarChart3, Camera, Bot } from "lucide-react"
+import { Calendar, BarChart3, Camera, Bot, ExternalLink } from "lucide-react"
 import { useState, useEffect, type FormEvent } from "react"
 import { sendFormToWhatsApp } from "@/lib/whatsapp"
 
 export default function SocialMediaPage() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [autoRotate, setAutoRotate] = useState(true)
 
   const services = [
     {
@@ -37,46 +38,118 @@ export default function SocialMediaPage() {
   const portfolioHighlights = [
     {
       platform: "Instagram",
-      campaign: "Fashion Brand Launch",
-      metrics: "300% engagement increase",
+      campaign: "Page management",
+      metrics: "50 Million+ views",
       image: "/images/campaign-instagram.jpeg", // ← Replace with your image
     },
     {
-      platform: "TikTok",
-      campaign: "Viral Challenge",
-      metrics: "2M+ views",
+      platform: "Instagram",
+      campaign: "Content Creation",
+      metrics: "Created high-performing content and UGC Ad",
       image: "/images/campaign-tiktok.jpeg", // ← Replace with your image
     },
     {
-      platform: "LinkedIn",
-      campaign: "B2B Lead Generation",
-      metrics: "150% lead increase",
+      platform: "Instagram",
+      campaign: "Music Promotion",
+      metrics: "200% increase in Spotify listens",
       image: "/images/campaign-linkedin.jpeg", // ← Replace with your image
     },
     {
-      platform: "YouTube",
-      campaign: "Product Tutorial Series",
-      metrics: "500K+ subscribers",
+      platform: "Youtube",
+      campaign: "SEO Optimization",
+      metrics: "50% increase in views",
       image: "/images/campaign-youtube.jpeg", // ← Replace with your image
     },
   ]
 
-  // Get testimonials from admin panel data
-  const [testimonials, setTestimonials] = useState<any[]>([])
+  // 🎯 Instagram pages handled with direct blob URLs for profile pictures
+  const pagesHandled = [
+    {
+      profileImage:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sambhav-pfp.jpg-x9Ps6JKCYyZKp8SwKGMiRb8gaqVbJt.jpeg", // ✅ Direct blob URL for Sambhav
+      handle: "@sambhav_jain_rsj",
+      url: "https://www.instagram.com/sambhav_jain_rsj?igsh=dzNsNGV2NmZlYnR0",
+      platform: "Instagram",
+      followers: "139K Followers",
+      description:
+        "Created high-performing content and promotional videos. Developed brand voice and visual identity across all posts.",
+      achievements: ["300% reach increase", "Brand identity development", "Massive follower increase"],
+    },
+    {
+      profileImage:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/samyak-pfp.jpg-FuUcSvS2f4Eb2WcAlh69ahcLCdKqsK.jpeg", // ✅ Direct blob URL for Samyak
+      handle: "@modisamyak",
+      url: "https://www.instagram.com/modisamyak?igsh=MTQ4OGx6cHg2eXkycw==",
+      platform: "Instagram",
+      followers: "12.2K Followers",
+      description:
+        "Managed complete content strategy and posting schedule. Achieved 200% engagement growth and 5K new followers in 3 months.",
+      achievements: ["200% engagement increase", "5K new followers", "Viral content creation"],
+    },
+    {
+      profileImage:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/rishabh-pfp.jpg-e37uzGau42zcNSMlKoRuWCiKx2Os1X.jpeg", // ✅ Direct blob URL for Rishabh
+      handle: "@rsj_rishabh_jain",
+      url: "https://www.instagram.com/rsj_rishabh_jain?igsh=ZmptZms1YjhnMjJl",
+      platform: "Instagram",
+      followers: "115K Followers",
+      description:
+        "Created high-performing content and promotional videos. Developed brand voice and visual identity across all posts.",
+      achievements: ["250% reach increase", "Brand identity development", "Massive follower increase"],
+    },
+    {
+      profileImage:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/drsomani-pfp.jpg-cNl3ZDfNTnd2tg73y7yfMMiGrom0FU.jpeg", // ✅ Direct blob URL for Dr Somani
+      handle: "@mindfulmovement_drsomani",
+      url: "https://www.instagram.com/mindfulmovement_drsomani?igsh=ZG95enVxY2NwMm5h",
+      platform: "Instagram",
+      followers: "800K+ Views",
+      description:
+        "Specialized healthcare content strategy with educational posts and patient testimonials. Built trust and authority in holistic medicine.",
+      achievements: ["200% increase in patient inquiries", "Educational content series"],
+    },
+  ]
 
+  // Auto-rotate Instagram pages every 3 seconds
   useEffect(() => {
-    const savedTestimonials = localStorage.getItem("psa-testimonials")
-    if (savedTestimonials) {
-      setTestimonials(JSON.parse(savedTestimonials))
-    }
-  }, [])
+    let interval: NodeJS.Timeout | null = null
 
-  // Update the currentTestimonial state to handle bounds checking
-  useEffect(() => {
-    if (testimonials.length > 0 && currentTestimonial >= testimonials.length) {
-      setCurrentTestimonial(0)
+    if (autoRotate) {
+      interval = setInterval(() => {
+        setCurrentPage((prev) => (prev + 1) % pagesHandled.length)
+      }, 3000) // Change every 3 seconds
     }
-  }, [testimonials, currentTestimonial])
+
+    // Pause auto-rotation when user hovers over the card
+    const handleMouseEnter = () => setAutoRotate(false)
+    const handleMouseLeave = () => setAutoRotate(true)
+
+    const card = document.getElementById("instagram-card")
+    if (card) {
+      card.addEventListener("mouseenter", handleMouseEnter)
+      card.addEventListener("mouseleave", handleMouseLeave)
+    }
+
+    // Clean up interval and event listeners when component unmounts
+    return () => {
+      if (interval) clearInterval(interval)
+      if (card) {
+        card.removeEventListener("mouseenter", handleMouseEnter)
+        card.removeEventListener("mouseleave", handleMouseLeave)
+      }
+    }
+  }, [autoRotate, pagesHandled.length])
+
+  // Update the currentPage state to handle bounds checking
+  useEffect(() => {
+    if (pagesHandled.length > 0 && currentPage >= pagesHandled.length) {
+      setCurrentPage(0)
+    }
+  }, [pagesHandled, currentPage])
+
+  const handlePageClick = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer")
+  }
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -112,7 +185,7 @@ export default function SocialMediaPage() {
             <h2 className="text-2xl md:text-3xl font-bold text-[#C0C0C0] mb-8 tracking-tight">
               Content Creation and Strategy
             </h2>
-            <p className="text-lg text-[#C0C0C0] max-w-4xl mx-auto leading-relaxed font-sans font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-4xl mx-auto leading-relaxed font-serif font-medium">
               We help brands build meaningful connections with their audience through strategic social media management,
               creative content creation, and data-driven growth strategies. From concept to execution, we handle every
               aspect of your social media presence to ensure maximum impact and engagement.
@@ -130,7 +203,7 @@ export default function SocialMediaPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Key Services</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
               Comprehensive social media solutions to grow your brand and engage your audience
             </p>
           </motion.div>
@@ -147,7 +220,7 @@ export default function SocialMediaPage() {
               >
                 <service.icon className="w-12 h-12 text-[#FFFFFF] mx-auto mb-6" />
                 <h3 className="text-lg font-bold text-[#FFFFFF] mb-3">{service.title}</h3>
-                <p className="text-sm text-[#F8F8F8] font-sans font-medium leading-relaxed">{service.description}</p>
+                <p className="text-sm text-[#C0C0C0] font-serif font-medium leading-relaxed">{service.description}</p>
               </motion.div>
             ))}
           </div>
@@ -163,7 +236,7 @@ export default function SocialMediaPage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Campaign Highlights</h2>
-            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-sans font-medium">
+            <p className="text-lg text-[#C0C0C0] max-w-2xl mx-auto font-serif font-medium">
               Success stories from our recent social media campaigns across various platforms
             </p>
           </motion.div>
@@ -187,7 +260,7 @@ export default function SocialMediaPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <div className="text-sm font-sans font-medium text-[#C0C0C0]">{highlight.platform}</div>
+                    <div className="text-sm font-serif font-medium text-[#C0C0C0]">{highlight.platform}</div>
                     <div className="text-lg font-bold">{highlight.metrics}</div>
                   </div>
                 </div>
@@ -197,7 +270,7 @@ export default function SocialMediaPage() {
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Pages Handled */}
         <section className="max-w-4xl mx-auto px-6 mb-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -206,60 +279,92 @@ export default function SocialMediaPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Client Testimonials</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-6">Pages Handled</h2>
+            <p className="text-lg text-[#C0C0C0] font-serif font-medium">
+              Instagram accounts we've successfully managed and grown - click to visit
+            </p>
           </motion.div>
 
-          {testimonials.length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="retro-card p-12 text-center"
-            >
-              <div className="mb-8">
+          <motion.div
+            id="instagram-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="retro-card p-12 text-center cursor-pointer hover:scale-105 transition-transform duration-300"
+            onClick={() => handlePageClick(pagesHandled[currentPage]?.url)}
+          >
+            <div className="mb-8">
+              <div className="relative inline-block">
                 <Image
-                  src={testimonials[currentTestimonial]?.src || "/placeholder.svg"}
-                  alt={testimonials[currentTestimonial]?.title || "Client"}
-                  width={60}
-                  height={60}
-                  className="rounded-full mx-auto mb-6 border-2 border-[#C0C0C0]"
+                  src={pagesHandled[currentPage]?.profileImage || "/placeholder.svg?height=80&width=80"}
+                  alt={pagesHandled[currentPage]?.handle || "Instagram Page"}
+                  width={80}
+                  height={80}
+                  className="rounded-full mx-auto mb-6 border-2 border-[#C0C0C0] object-cover"
+                  onError={(e) => {
+                    // Fallback to placeholder if profile pic fails to load
+                    e.currentTarget.src = "/placeholder.svg?height=80&width=80"
+                  }}
                 />
-                <blockquote className="text-lg text-[#C0C0C0] italic mb-6 font-sans font-medium">
-                  "{testimonials[currentTestimonial]?.description}"
-                </blockquote>
-                <div className="font-bold text-[#FFFFFF]">{testimonials[currentTestimonial]?.title}</div>
-                <div className="text-[#C0C0C0] text-sm font-sans">{testimonials[currentTestimonial]?.category}</div>
+                <ExternalLink className="absolute -top-2 -right-2 w-6 h-6 text-[#C0C0C0] bg-black rounded-full p-1 border border-[#C0C0C0]" />
               </div>
 
-              <div className="flex justify-center space-x-2">
-                {testimonials.map((_, index) => (
-                  <button
+              <div className="mb-4">
+                <motion.div
+                  key={pagesHandled[currentPage]?.handle}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-2xl font-bold text-[#FFFFFF] mb-2 hover:text-[#C0C0C0] transition-colors"
+                >
+                  {pagesHandled[currentPage]?.handle}
+                </motion.div>
+                <div className="text-[#C0C0C0] text-sm font-serif mb-2">{pagesHandled[currentPage]?.platform}</div>
+                <div className="text-lg font-bold text-[#FFFFFF] mb-4">{pagesHandled[currentPage]?.followers}</div>
+              </div>
+
+              <motion.p
+                key={`desc-${currentPage}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-lg text-[#C0C0C0] mb-6 font-serif font-medium leading-relaxed"
+              >
+                {pagesHandled[currentPage]?.description}
+              </motion.p>
+
+              <div className="flex flex-wrap justify-center gap-2 mb-6">
+                {pagesHandled[currentPage]?.achievements.map((achievement, index) => (
+                  <span
                     key={index}
-                    onClick={() => setCurrentTestimonial(index)}
-                    className={`w-3 h-3 rounded-full transition-colors duration-200 border border-[#C0C0C0] ${
-                      index === currentTestimonial ? "bg-[#C0C0C0]" : "bg-transparent"
-                    }`}
-                  />
+                    className="px-3 py-1 bg-[#C0C0C0]/20 text-[#C0C0C0] text-sm rounded-full border border-[#C0C0C0]/30"
+                  >
+                    {achievement}
+                  </span>
                 ))}
               </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="retro-card p-12 text-center"
-            >
-              <div className="text-[#C0C0C0] font-sans">
-                <p className="text-lg mb-4">No testimonials available yet.</p>
-                <p className="text-sm">
-                  Add client testimonials from the admin panel to showcase your success stories.
-                </p>
-              </div>
-            </motion.div>
-          )}
+
+              <div className="text-sm text-[#C0C0C0] font-serif opacity-75">Click to visit Instagram page</div>
+            </div>
+
+            <div className="flex justify-center space-x-2">
+              {pagesHandled.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentPage(index)
+                    setAutoRotate(false) // Stop auto-rotation when manually selecting
+                    setTimeout(() => setAutoRotate(true), 10000) // Resume after 10 seconds
+                  }}
+                  className={`w-3 h-3 rounded-full transition-colors duration-200 border border-[#C0C0C0] ${
+                    index === currentPage ? "bg-[#C0C0C0]" : "bg-transparent"
+                  }`}
+                />
+              ))}
+            </div>
+          </motion.div>
         </section>
 
         {/* Contact Form */}
@@ -275,7 +380,7 @@ export default function SocialMediaPage() {
               <h2 className="text-3xl md:text-4xl font-black text-[#FFFFFF] mb-4">
                 Ready to Grow Your Social Presence?
               </h2>
-              <p className="text-lg text-[#C0C0C0] font-sans font-medium">
+              <p className="text-lg text-[#C0C0C0] font-serif font-medium">
                 Let's discuss your social media goals and create a strategy that delivers results
               </p>
             </div>

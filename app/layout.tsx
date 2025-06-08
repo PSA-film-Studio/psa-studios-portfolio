@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Montserrat, Roboto } from "next/font/google"
+import { Montserrat, Roboto_Slab } from "next/font/google"
 import "./globals.css"
 import AdminLink from "@/components/admin-link"
 
@@ -10,7 +10,7 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 })
 
-const roboto = Roboto({
+const robotoSlab = Roboto_Slab({
   subsets: ["latin"],
   weight: ["400", "500", "700", "900"],
   variable: "--font-roboto",
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${roboto.variable} font-sans relative`}
+        className={`${montserrat.variable} ${robotoSlab.variable} font-sans relative`}
         style={{ backgroundColor: "#000000" }}
       >
         <div className="noise-overlay"></div>

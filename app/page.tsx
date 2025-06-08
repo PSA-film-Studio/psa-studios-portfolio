@@ -158,7 +158,7 @@ export default function HomePage() {
 
             {/* Service Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 w-full max-w-6xl mt-8 md:mt-20">
-              {/* Cinematography */}
+              {/* Cinematography with Background Image */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: animationPhase >= 2 ? 1 : 0, y: animationPhase >= 2 ? 0 : 40 }}
@@ -170,7 +170,7 @@ export default function HomePage() {
                     whileHover={{ y: -8, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="relative bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center overflow-hidden"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -178,18 +178,33 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
-                      CINEMATOGRAPHY
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
-                      Professional Video Production
-                    </p>
+                    {/* Background Image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 group-hover:opacity-70 transition-opacity duration-300"
+                      style={{
+                        backgroundImage: "url('/images/cinematography-bg.jpg')",
+                        backgroundSize: "cover",
+                      }}
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto drop-shadow-lg" />
+                      <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight drop-shadow-lg">
+                        CINEMATOGRAPHY
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium drop-shadow-lg">
+                        Professional Video Production
+                      </p>
+                    </div>
                   </motion.div>
                 </Link>
               </motion.div>
 
-              {/* Video Editing */}
+              {/* Video Editing with Background Image */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: animationPhase >= 2 ? 1 : 0, y: animationPhase >= 2 ? 0 : 40 }}
@@ -201,7 +216,7 @@ export default function HomePage() {
                     whileHover={{ y: -8, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="relative bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center overflow-hidden"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -209,18 +224,33 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Film className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
-                      VIDEO EDITING
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
-                      Post-Production Excellence
-                    </p>
+                    {/* Background Image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 group-hover:opacity-70 transition-opacity duration-300"
+                      style={{
+                        backgroundImage: "url('/images/video-editing-bg.jpg')",
+                        backgroundSize: "cover",
+                      }}
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <Film className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto drop-shadow-lg" />
+                      <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight drop-shadow-lg">
+                        VIDEO EDITING
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium drop-shadow-lg">
+                        Post-Production Excellence
+                      </p>
+                    </div>
                   </motion.div>
                 </Link>
               </motion.div>
 
-              {/* Social Media */}
+              {/* Social Media with Background Image */}
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: animationPhase >= 2 ? 1 : 0, y: animationPhase >= 2 ? 0 : 40 }}
@@ -232,7 +262,7 @@ export default function HomePage() {
                     whileHover={{ y: -8, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center"
+                    className="relative bg-[#C0C0C0]/10 backdrop-blur-sm border border-[#FFFFFF]/30 rounded-xl p-6 sm:p-8 hover:border-[#FFFFFF] hover:shadow-2xl transition-all duration-300 cursor-pointer text-center overflow-hidden"
                     style={{
                       boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
                     }}
@@ -240,13 +270,28 @@ export default function HomePage() {
                       boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.2)",
                     }}
                   >
-                    <Share2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto" />
-                    <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight">
-                      SOCIAL MEDIA
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium">
-                      Strategic Content Creation
-                    </p>
+                    {/* Background Image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 group-hover:opacity-70 transition-opacity duration-300"
+                      style={{
+                        backgroundImage: "url('/images/social-media-bg-new.png')",
+                        backgroundSize: "cover",
+                      }}
+                    />
+
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <Share2 className="w-6 h-6 sm:w-8 sm:h-8 text-[#FFFFFF] mb-4 sm:mb-6 mx-auto drop-shadow-lg" />
+                      <h3 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-3 sm:mb-4 tracking-tight drop-shadow-lg">
+                        SOCIAL MEDIA
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#C0C0C0] font-black font-medium drop-shadow-lg">
+                        Strategic Content Creation
+                      </p>
+                    </div>
                   </motion.div>
                 </Link>
               </motion.div>
