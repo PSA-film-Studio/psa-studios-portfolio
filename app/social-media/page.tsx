@@ -34,31 +34,26 @@ export default function SocialMediaPage() {
     },
   ]
 
-  // 🎯 EASY TO EDIT: Replace these with your actual campaign images
+  // 🎯 Campaign images that match the actual campaign types
   const portfolioHighlights = [
     {
       platform: "Instagram",
       campaign: "Page management",
-      metrics: "50 Million+ views",
-      image: "/images/campaign-instagram.jpeg", // ← Replace with your image
+      metrics: "25 Million+ views",
+      image: "/images/campaign-page-management.png", // ✅ Using the uploaded image
     },
     {
       platform: "Instagram",
       campaign: "Content Creation",
       metrics: "Created high-performing content and UGC Ad",
-      image: "/images/campaign-tiktok.jpeg", // ← Replace with your image
-    },
-    {
-      platform: "Instagram",
-      campaign: "Music Promotion",
-      metrics: "200% increase in Spotify listens",
-      image: "/images/campaign-linkedin.jpeg", // ← Replace with your image
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Beige%20Aesthetic%20Minimalist%20Autumn%20Moodboard%20Photo%20Collage%20Instagram%20Post%20%283%29-uD8hmifn3nJap7kyrz5mdq6sP2Hvve.png",
     },
     {
       platform: "Youtube",
       campaign: "SEO Optimization",
       metrics: "50% increase in views",
-      image: "/images/campaign-youtube.jpeg", // ← Replace with your image
+      image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1000&auto=format&fit=crop", // Updated YouTube analytics image
     },
   ]
 
@@ -241,7 +236,7 @@ export default function SocialMediaPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {portfolioHighlights.map((highlight, index) => (
               <motion.div
                 key={index}
@@ -257,8 +252,18 @@ export default function SocialMediaPage() {
                     alt={highlight.campaign}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  {/* Black filter overlay - stronger for the first image */}
+                  <div
+                    className={`absolute inset-0 w-full h-full ${
+                      index === 0
+                        ? "bg-black/60"
+                        : index === 2
+                          ? "bg-black/40"
+                          : "bg-gradient-to-t from-black/80 to-transparent"
+                    }`}
+                  />
                   <div className="absolute bottom-4 left-4 right-4 text-white">
                     <div className="text-sm font-serif font-medium text-[#C0C0C0]">{highlight.platform}</div>
                     <div className="text-lg font-bold">{highlight.metrics}</div>

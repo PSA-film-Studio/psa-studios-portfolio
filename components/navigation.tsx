@@ -13,7 +13,7 @@ export default function Navigation() {
   const navItems = [
     { href: "/", label: "HOME" },
     { href: "/cinematography", label: "CINEMATOGRAPHY" },
-    { href: "/video-editing", label: "VIDEO EDITING" },
+    { href: "/video-editing-coming-soon", label: "VIDEO EDITING" },
     { href: "/social-media", label: "SOCIAL MEDIA" },
   ]
 

@@ -2,69 +2,9 @@
 
 import { motion } from "framer-motion"
 import Navigation from "@/components/navigation"
-import { Palette, Zap, Award, BookOpen, Cpu, Sparkles } from "lucide-react"
 import { sendToWhatsApp } from "@/lib/whatsapp"
-import { useState, useEffect } from "react"
 
-interface Project {
-  id: string
-  title: string
-  category: string
-  description: string
-  thumbnail: string
-  url?: string
-  isExternal?: boolean
-}
-
-export default function VideoEditingPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-
-  useEffect(() => {
-    const savedProjects = localStorage.getItem("psaStudiosProjects")
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects))
-    }
-  }, [])
-
-  const editingStyles = [
-    {
-      icon: Award,
-      title: "Premium Quality",
-      description: "Broadcast-quality output with attention to every detail and technical standard",
-    },
-    {
-      icon: BookOpen,
-      title: "Storytelling",
-      description: "Expert narrative structure and emotional pacing to captivate your audience",
-    },
-    {
-      icon: Zap,
-      title: "Motion Graphics",
-      description: "Dynamic animations and visual effects that bring your content to life",
-    },
-    {
-      icon: Palette,
-      title: "Color Grading",
-      description: "Professional color correction and grading to enhance mood and visual consistency",
-    },
-    {
-      icon: Cpu,
-      title: "Generative AI",
-      description: "Cutting-edge AI tools for enhanced creativity and efficient workflow optimization",
-    },
-    {
-      icon: Sparkles,
-      title: "Visual FX",
-      description: "Professional visual effects and compositing for cinematic impact",
-    },
-  ]
-
-  const handleProjectClick = (project: Project) => {
-    if (project.url && project.isExternal) {
-      window.open(project.url, "_blank")
-    }
-  }
-
+export default function VideoEditingComingSoonPage() {
   return (
     <div className="min-h-screen text-[#FFFFFF]" style={{ background: "#000000" }}>
       <Navigation />
