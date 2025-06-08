@@ -11,53 +11,8 @@ export default function SocialMediaPage() {
   const [currentPage, setCurrentPage] = useState(0)
   const [autoRotate, setAutoRotate] = useState(true)
 
-  const services = [
-    {
-      icon: Bot,
-      title: "AI Clone",
-      description: "AI-powered content generation and automated engagement strategies",
-    },
-    {
-      icon: Camera,
-      title: "Content Creation",
-      description: "High-quality photos, videos, and graphics tailored for each platform",
-    },
-    {
-      icon: Calendar,
-      title: "Posting Schedules",
-      description: "Strategic content calendar and automated posting for optimal engagement",
-    },
-    {
-      icon: BarChart3,
-      title: "Analytics & Insights",
-      description: "Detailed performance tracking and data-driven optimization strategies",
-    },
-  ]
 
-  // 🎯 Campaign images that match the actual campaign types
-  const portfolioHighlights = [
-    {
-      platform: "Instagram",
-      campaign: "Page management",
-      metrics: "25 Million+ views",
-      image: "/images/campaign-page-management.png", // ✅ Using the uploaded image
-    },
-    {
-      platform: "Instagram",
-      campaign: "Content Creation",
-      metrics: "Created high-performing content and UGC Ad",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Beige%20Aesthetic%20Minimalist%20Autumn%20Moodboard%20Photo%20Collage%20Instagram%20Post%20%283%29-uD8hmifn3nJap7kyrz5mdq6sP2Hvve.png",
-    },
-    {
-      platform: "Youtube",
-      campaign: "SEO Optimization",
-      metrics: "50% increase in views",
-      image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1000&auto=format&fit=crop", // Updated YouTube analytics image
-    },
-  ]
-
-  // 🎯 Instagram pages handled with direct blob URLs for profile pictures
+   // 🎯 Instagram pages handled with direct blob URLs for profile pictures
   const pagesHandled = [
     {
       profileImage:
@@ -105,6 +60,54 @@ export default function SocialMediaPage() {
     },
   ]
 
+  //starting script revert back to this if problematic
+  const services = [
+    {
+      icon: Bot,
+      title: "AI Clone",
+      description: "AI-powered content generation and automated engagement strategies",
+    },
+    {
+      icon: Camera,
+      title: "Content Creation",
+      description: "High-quality photos, videos, and graphics tailored for each platform",
+    },
+    {
+      icon: Calendar,
+      title: "Posting Schedules",
+      description: "Strategic content calendar and automated posting for optimal engagement",
+    },
+    {
+      icon: BarChart3,
+      title: "Analytics & Insights",
+      description: "Detailed performance tracking and data-driven optimization strategies",
+    },
+  ]
+
+  // 🎯 Campaign images that match the actual campaign types
+  const portfolioHighlights = [
+    {
+      platform: "Instagram",
+      campaign: "Page management",
+      metrics: "25 Million+ views",
+      image: "/images/campaign-page-management.png", // ✅ Using the uploaded image
+    },
+    {
+      platform: "Instagram",
+      campaign: "Content Creation",
+      metrics: "Created high-performing content and UGC Ad",
+      image:
+        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Beige%20Aesthetic%20Minimalist%20Autumn%20Moodboard%20Photo%20Collage%20Instagram%20Post%20%283%29-uD8hmifn3nJap7kyrz5mdq6sP2Hvve.png",
+    },
+    {
+      platform: "Youtube",
+      campaign: "SEO Optimization",
+      metrics: "50% increase in views",
+      image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=1000&auto=format&fit=crop", // Updated YouTube analytics image
+    },
+  ]
+
+ 
   // Auto-rotate Instagram pages every 3 seconds
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
