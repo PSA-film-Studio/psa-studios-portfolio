@@ -252,7 +252,7 @@ export default function CinematographyPage() {
           category: "cinematography",
           section: "films",
           layout: { colSpan: "md:col-span-1", rowSpan: "md:row-span-1", aspectRatio: "aspect-[16/9]" },
-          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/68441be42ea48d13d45b487b?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
+          embedCode: `<div style="position:relative;aspect-ratio:16/9;width:100%;height:100%;"><iframe loading="lazy" title="Gumlet video player" src="https://play.gumlet.io/embed/6847f5fef923a3909d04d76b?autoplay=true&muted=0&controls=1&start_high_res=true" style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;"></iframe></div>`,
         },
       ])
     }
